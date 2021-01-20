@@ -13,6 +13,9 @@ name="default0.85"
 # name="Var0.90"
 # name="Var0.95"
 
+### indicate if manual threshold setting or not ###
+THRESHOLD=0.5
+
 echo "Assigning Variables"
 OUT="$DIR/output/Scrublet/$name"
 PIPELINE="$DIR/scripts/Scrublet/Scrublet.sh"
@@ -40,12 +43,12 @@ then
     VAR=0.95
 fi
 
-NUMSAMPS=1
+NUMSAMPS=8
 
 echo "Starting qsub"
 qsub -S /bin/bash \
     -cwd \
-    -t 1-$NUMSAMPS \
+    -t 3-3 \
     -N array \
     -q short.q \
     -l mem_requested=20G \
@@ -55,6 +58,6 @@ qsub -S /bin/bash \
     -r yes \
     -j y \
     -M d.neavin@garvan.org.au \
-    -v OUT=$OUT,SAMPLEINFO=$SAMPLEINFO,DIR=$DIR,VAR=$VAR \
+    -v OUT=$OUT,SAMPLEINFO=$SAMPLEINFO,DIR=$DIR,VAR=$VAR,THRESHOLD=$THRESHOLD \
     -V \
     -C '' $PIPELINE
