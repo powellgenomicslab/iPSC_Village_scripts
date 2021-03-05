@@ -269,7 +269,7 @@ if (stage == "Hashtags"){
 
 } else if (stage[1]=="Demultiplex_Doublet"){
     outdir <- paste0(outbase,stage,"/")
-    seurat_norm <- readRDS(paste0(dir,"output/Seurat_w_Hash/Hashtags/AllCellsSeurat_norm_meta.rds"))
+    seurat_norm <- readRDS(paste0(dir,"output/Seurat_w_Hash_freeze_thaw/Hashtags/AllCellsSeurat_norm_meta.rds"))
 
     ## Add demultiplexing and doublet detection results ##
     demultiplexing <- lapply(pools, function(x){
@@ -438,7 +438,6 @@ if (stage == "Hashtags"){
     droplettype_assignments <- left_join(droplettype_wide, assignment_wide, by = c("Barcode", "Pool"))
 
 
-
     ### 4. Use if else statements to call singlets and individuals assigned to those cells
     droplettype_assignments$Final_Assignment <- ifelse(droplettype_assignments$doublet >= 4, "doublet", 
                                                     ifelse(droplettype_assignments$unassigned >= 4, "unassigned", 
@@ -473,6 +472,10 @@ if (stage == "Hashtags"){
     ### Add final assignments to seurat object ###
     seurat_norm <- AddMetaData(seurat_norm, droplettype_assignments)
 
+
+    seurat_norm@meta.data %>% 
+        group_by(Final_Assignment) %>%
+        summarise(mean = max(nCount_RNA))
 
     ### Make pre-QC figures ###
     seurat_norm <- NormalizeData(seurat_norm, verbose = TRUE)
@@ -638,8 +641,8 @@ if (stage == "Hashtags"){
     ggsave(p_Site_by_CellProportion, filename = paste0(outdir,"Site_by_CellProportion_singlets.png"))
  
 } else if (stage[1]=="QC"){
-    seurat <- readRDS(paste0(outbase,"/Demultiplex_Doublet/Seurat_noDoublets_norm_meta.rds"))
-    outdir <- paste0(outbase,"/",stage,"/")
+    seurat <- readRDS(paste0(dir,"/output/Seurat_w_Hash_freeze_thaw/Demultiplex_Doublet/Seurat_noDoublets_norm_meta.rds"))
+    # outdir <- paste0(outbase,"/",stage,"/")
     pools <- dir("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/")
 
     ## Calculate MADs
@@ -685,7 +688,7 @@ if (stage == "Hashtags"){
 
 
     ### Vioplin plots by cell type and site ###
-    p_violin_mt_pct_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), percent.mt, fill = factor(FinalAssignment, levels = c("FSA006", "MBE1006","TOB421")))) +
+    p_violin_mt_pct_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), percent.mt, fill = factor(Final_Assignment, levels = c("FSA006", "MBE1006","TOB421")))) +
         geom_violin() +
         theme_classic() +
         labs(y="Mitochondrial Percent", x = "Sample Day", fill = "Cell Line") +
@@ -693,7 +696,7 @@ if (stage == "Hashtags"){
         facet_wrap(vars( MULTI_ID))
     ggsave(p_violin_mt_pct_line_site, filename = paste0(outdir,"violin_mt_pct_line_site.png"))
 
-    p_violin_rb_pct_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), percent.rb, fill = factor(FinalAssignment, levels = c("FSA006", "MBE1006","TOB421")))) +
+    p_violin_rb_pct_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), percent.rb, fill = factor(Final_Assignment, levels = c("FSA006", "MBE1006","TOB421")))) +
         geom_violin() +
         theme_classic() +
         labs(y="Ribosomal Percent", x = "Sample Day", fill = "Cell Line") +
@@ -701,7 +704,7 @@ if (stage == "Hashtags"){
         facet_wrap(vars( MULTI_ID))
     ggsave(p_violin_rb_pct_line_site, filename = paste0(outdir,"violin_rb_pct_line_site.png"))
 
-    p_violin_n_count_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), nCount_RNA, fill = factor(FinalAssignment, levels = c("FSA006", "MBE1006","TOB421")))) +
+    p_violin_n_count_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), nCount_RNA, fill = factor(Final_Assignment, levels = c("FSA006", "MBE1006","TOB421")))) +
         geom_violin() +
         theme_classic() +
         labs(y="Number UMIs", x = "Sample Day", fill = "Cell Line") +
@@ -709,7 +712,7 @@ if (stage == "Hashtags"){
         facet_wrap(vars( MULTI_ID))
     ggsave(p_violin_n_count_line_site, filename = paste0(outdir,"violin_n_count_line_site.png"))
 
-    p_violin_n_feature_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), nFeature_RNA, fill = factor(FinalAssignment, levels = c("FSA006", "MBE1006","TOB421")))) +
+    p_violin_n_feature_line_site <- ggplot(seurat@meta.data, aes(factor(Time, levels = c("Day_0", "Day_4")), nFeature_RNA, fill = factor(Final_Assignment, levels = c("FSA006", "MBE1006","TOB421")))) +
         geom_violin() +
         theme_classic() +
         labs(y="Number Features", x = "Sample Day", fill = "Cell Line") +
@@ -720,9 +723,9 @@ if (stage == "Hashtags"){
 
 
     ##### Remove the outliers #####
-    ### Only filter based on mt% since others are pretty well within expected distributions
+    ### Only filter based on mt% andn low number of genes since others are pretty well within expected distributions
     print(seurat)
-    seurat_filt <- subset(seurat, subset = percent.mt_mad == "NotOutlier") 
+    seurat_filt <- subset(seurat, subset = percent.mt_mad == "NotOutlier" & nFeature_RNA > 1750) 
 
     print(seurat_filt)
     saveRDS(seurat_filt, paste0(outdir,"seurat_norm_NoOutliers.rds"))
@@ -796,15 +799,48 @@ if (stage == "Hashtags"){
     seurat <- FindClusters(seurat, resolution = 0.5)
     seurat <- RunUMAP(seurat, dims = 1:10)
 
-    s.genes <- cc.genes$s.genes
-    s.genes_ENSG <- seurat[["RNA"]][[]][which(seurat[["RNA"]][[]]$Gene_ID %in% s.genes),"ENSG"]
-    g2m.genes <- cc.genes$g2m.genes
-    g2m.genes_ENSG <- seurat[["RNA"]][[]][which(seurat[["RNA"]][[]]$Gene_ID %in% g2m.genes),"ENSG"]
+
+    ##### Compute Cell Cycle Using scran package and compare the results from seurat and scran #####
+    print("Loading in data for cell cycle determination")
+    hs.pairs <- readRDS(system.file("exdata", "human_cycle_markers.rds", package="scran"))
+
+    ### Run the cell cycle identification ###
+    assigned <- cyclone(seurat[["RNA"]]@counts, pairs=hs.pairs)  #Note, this takes hours
+
+    table(assigned$phases)
+    write.table(assigned, file = paste0(outdir,"CellCycleProportions.txt"), quote = F, sep = "\t") #Save so that can read in and don't have to wait to recompute again
+
+    rownames(CellCycle) <- colnames(seurat)
+    seurat <- AddMetaData(seurat, CellCycle)
 
 
-    seurat <- CellCycleScoring(seurat, s.features = s.genes_ENSG, g2m.features = g2m.genes_ENSG, set.ident = TRUE)
+    ##### Add gene IDs for easy identification downstream #####
+    GeneConversion1 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/DRENEA_1/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+    GeneConversion2 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/Village_B_1_week/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
 
-    umap_cellcycle <- DimPlot(seurat, group.by = "Phase")
+    GeneConversion <- unique(rbind(GeneConversion1, GeneConversion2))
+    GeneConversion <- GeneConversion[!duplicated(GeneConversion$X1),]
+    GeneConversion <- left_join(data.frame(rownames(seurat)), GeneConversion, by= c("rownames.seurat." = "X1"))
+
+    meta <- data.frame("Gene_ID" = GeneConversion$X2)
+    rownames(meta) <- GeneConversion$rownames.seurat.
+
+
+    seurat[["RNA"]] <- AddMetaData(seurat[["RNA"]], meta)
+
+
+    ### Separate the seurat image by site and time and save separately
+    seurat@meta.data$Location_Time <- gsub(" ", "_", paste0(gsub("\\d","",seurat@meta.data$MULTI_ID), "_", seurat@meta.data$Time))
+
+    for (location in unique(seurat@meta.data$Location_Time)){
+        saveRDS(subset(seurat, subset = Location_Time == location), paste0(outdir,location,"_seurat.rds"))
+    }
+
+    saveRDS(seurat, paste0(outdir, "seurat_filtered_cell_cycle.rds"))
+
+
+    ### Make figures ###
+    umap_cellcycle <- DimPlot(seurat, group.by = "phases")
     ggsave(umap_cellcycle, filename = paste0(outdir,"pool_umap_cell_cycle.png"))
 
     lib_mt <- FeatureScatter(seurat, feature1 = "nCount_RNA", feature2 = "percent.mt", group.by = "Pool", cols = alpha(PoolColors, 0.25))
@@ -835,11 +871,5 @@ if (stage == "Hashtags"){
     ggsave(assignment_umap, filename = paste0(outdir,"Final_Assignment_umap_seurat.png"))
 
 
-    ### Separate the seurat image by site and time and save separately
-    seurat@meta.data$Location_Time <- gsub(" ", "_", paste0(gsub("\\d","",seurat@meta.data$MULTI_ID), "_", seurat@meta.data$Time))
-
-    for (location in unique(seurat@meta.data$Location_Time)){
-        saveRDS(subset(seurat, subset = Location_Time == location), paste0(outdir,location,"_seurat.rds"))
-    }
     
 }

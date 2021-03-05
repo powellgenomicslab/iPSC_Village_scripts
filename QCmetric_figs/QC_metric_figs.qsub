@@ -1,0 +1,23 @@
+#!/bin/bash
+
+#### Before running for the first time:
+######## mkdir -p /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/QC_metric_figs/logs
+
+
+## SGE SETTINGS
+#$ -cwd
+#$ -S /bin/bash
+#$ -q short.q
+#$ -r yes
+#$ -l mem_requested=100G 
+#$ -l tmp_requested=100G
+#$ -N QC_metrics
+#$ -e /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/QC_metric_figs/logs
+#$ -o /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/QC_metric_figs/logs
+#$ -j y
+#$ -M d.neavin@garvan.org.au
+#$ -m e
+
+eval "$(conda shell.bash hook)"
+conda activate baseR402
+Rscript /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/scripts/QCmetric_figs/QC_metric_figs.R

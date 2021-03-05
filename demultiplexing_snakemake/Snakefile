@@ -1,0 +1,596 @@
+#!/usr/local/envs/py36/bin python3
+
+##### Information about the use of this snakemake file
+## Project: demultiplex iPSC Village Phase 1 samples
+## Genome: GRCh38 (hg38)
+## Genotyped samples: Yes
+
+
+import os 
+import pandas as pd
+import prepareArguments
+import datetime
+from datetime import datetime
+
+### Set the date and time of run starting
+date_now = datetime.date(datetime.now())
+time_now = datetime.time(datetime.now())
+datetime_now = str(date_now) + "_" + str(time_now)
+
+
+
+sample_file = "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Sample_meta.tsv"
+samples = pd.read_csv(sample_file, sep = "\t")
+datadir = "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/"
+outdir = "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output"
+FASTA="/directflow/SCCGGroupShare/projects/DrewNeavin/References/ENSEMBLfasta/GRCh38/genome.fa"
+FAI="/directflow/SCCGGroupShare/projects/DrewNeavin/References/ENSEMBLfasta/GRCh38/genome.fa.fai"
+SNP="/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/SNPgenotypes/merged_imputed_AllChrs_iPSC_R2_0.3_exons_filteredLines_hg38.vcf"
+
+
+scrnaseq_libs_df = prepareArguments.get_scrnaseq_dirs(datadir, sample_file)
+
+
+
+rule all:
+    input:
+        expand(outdir +  "/scSplit/{pool}/scSplit.vcf", pool=samples.Pool),
+        expand(outdir +  "/CombinedResults/{pool}/CombinedDropletAssignments.tsv", pool=samples.Pool),
+
+
+        
+
+###################################
+############# SCSPLIT #############
+###################################
+
+###### scSplit Preprocessing ######
+rule scSplit_sam_header:
+    input:
+        bam = lambda wildcards: scrnaseq_libs_df["Bam_Files"][wildcards.pool]
+    threads: 8
+    output:
+        temp(outdir + "/scSplit/{pool}/SAM_header")
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    group: "scSplit"
+    shell:
+        "singularity exec {params.sif} samtools view -@ {threads} -H {input.bam} > {output}"
+
+rule scSplit_sam_body:
+    input:
+        bam = lambda wildcards: scrnaseq_libs_df["Bam_Files"][wildcards.pool],
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool]
+    threads: 8
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    output:
+        temp(outdir + "/scSplit/{pool}/filtered_SAM_body")
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    group: "scSplit"
+    shell:
+        "singularity exec {params.sif} samtools view -@ {threads} -S -q 10 -F 3844 {input.bam} | LC_ALL=C grep -F -f {input.barcodes} > {output}"
+
+rule scSplit_sam_combine:
+    input:
+        header=outdir + "/scSplit/{pool}/SAM_header",
+        body=outdir + "/scSplit/{pool}/filtered_SAM_body"
+    threads: 8
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    group: "scSplit"
+    output:
+        temp(outdir + "/scSplit/{pool}/filtered.bam")
+    shell:
+        "singularity exec {params.sif} cat {input.header} {input.body} | singularity exec {params.sif} samtools view -@ {threads} -b - > {output}"
+
+rule scSplit_rmdupe:
+    input:
+        bam=outdir + "/scSplit/{pool}/filtered.bam"
+    output:
+        temp(outdir + "/scSplit/{pool}/dedup_filtered.bam")
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 24,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 24
+    threads: 1
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    group: "scSplit"
+    shell:
+        "singularity exec {params.sif} samtools rmdup {input.bam} {output}"
+
+rule scSplit_sort:
+    input:
+        outdir + "/scSplit/{pool}/dedup_filtered.bam"
+    threads: 8
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 16,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 16
+    output:
+        outdir + "/scSplit/{pool}/possort_dedup_filtered.bam"
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    group: "scSplit"
+    shell:
+        """
+        singularity exec {params.sif} samtools sort -@ {threads} -o {output} {input}
+        singularity exec {params.sif} samtools index {output}
+        """
+
+rule scSplit_regions:
+    input:
+        fai = FAI,
+        bam = outdir + "/scSplit/{pool}/possort_dedup_filtered.bam"
+    output:
+        temp(outdir + "/scSplit/{pool}/regions_file")
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 4,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 4
+    threads: 1
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    group: "freebayes"
+    shell:
+        """
+            singularity exec {params.sif} fasta_generate_regions.py {input.fai} 100000 > {output}
+        """
+
+rule scSplit_freebayes:
+    input:
+        fasta = FASTA,
+        bam = outdir + "/scSplit/{pool}/possort_dedup_filtered.bam",
+        regions = outdir + "/scSplit/{pool}/regions_file"
+    output:
+        outdir + "/scSplit/{pool}/freebayes_var.vcf"
+    group: "freebayes"
+    threads: 48
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 2,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 2
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    shell:
+        """
+        export TMPDIR=/tmp
+        singularity exec {params.sif} freebayes-parallel {input.regions} {threads} -f {input.fasta} -iXu -C 2 -q 1 {input.bam} > {output}
+        """
+ 
+rule scSplit_vcf_qual_filt:
+    input:
+        vcf= ancient(outdir + "/scSplit/{pool}/freebayes_var.vcf")
+    output:
+        outdir + "/scSplit/{pool}/frebayes_var_qual30.vcf.recode.vcf"
+    group: "freebayes"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 12,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 12
+    threads: 1
+    params:
+        out=outdir + "/scSplit/{pool}/frebayes_var_qual30.vcf",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    shell:
+        """
+        singularity exec {params.sif} vcftools --gzvcf {input.vcf} --minQ 30 --recode --recode-INFO-all --out {params.out}
+        [[ -s {output} ]]
+        echo $?
+        """      
+
+rule scSplit_bgzip:
+    input:
+        ancient(outdir + "/scSplit/{pool}/frebayes_var_qual30.vcf.recode.vcf")
+    output:
+        gz=outdir + "/scSplit/{pool}/frebayes_var_qual30.vcf.recode.vcf.gz",
+        index=outdir + "/scSplit/{pool}/frebayes_var_qual30.vcf.recode.vcf.gz.tbi"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 12,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 12
+    threads: 1
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    shell:
+        """
+        singularity exec {params.sif} bgzip  -c {input} > {output.gz}
+        singularity exec {params.sif} tabix -p vcf {output.gz}
+        [[ -s {output.index} ]]
+        echo $?
+        """
+
+rule scSplit_subset_vcf:
+    input:
+        pileup=outdir + "/scSplit/{pool}/frebayes_var_qual30.vcf.recode.vcf.gz",
+        snps=SNP + ".gz"
+    output:
+        outdir + "/scSplit/{pool}/frebayes_var_qual30_subset.vcf"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 12,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 12
+    threads: 1
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+    shell:
+        "singularity exec {params.sif} bcftools view {input.pileup} -R {input.snps} -Ov -o {output}"
+
+
+##### scSplit Allele Counting #####
+rule scSplit_allele_matrices:
+    input:
+        snvs=SNP,
+        vcf=outdir + "/scSplit/{pool}/frebayes_var_qual30_subset.vcf",
+        bam=outdir + "/scSplit/{pool}/possort_dedup_filtered.bam"
+    output:
+        alt=outdir + "/scSplit/{pool}/alt_filtered.csv",
+        ref=outdir + "/scSplit/{pool}/ref_filtered.csv"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 48,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 48
+    threads: 4
+    params:
+        out=outdir + "/scSplit/{pool}/",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool]
+    shell:
+        """
+        singularity exec {params.sif} scSplit count -c {input.snvs} -v {input.vcf} -i {input.bam} -b {params.barcodes} -r {output.ref} -a {output.alt} -o {params.out}
+        [[ -s {output.alt} ]]
+        echo $?
+         """
+
+##### scSplit Demultiplexing #####
+rule scSplit_demultiplex:
+    input:
+        alt=outdir + "/scSplit/{pool}/alt_filtered.csv",
+        ref=outdir + "/scSplit/{pool}/ref_filtered.csv"
+    output:
+        Psc=outdir + "/scSplit/{pool}/scSplit_P_s_c.csv",
+        result=outdir + "/scSplit/{pool}/scSplit_result.csv"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 48,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 48
+    threads: 5
+    params:
+        out=outdir + "/scSplit/{pool}/",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        N=lambda wildcards: samples.N[samples.Pool == wildcards.pool].iloc[0]
+    shell:
+        """
+        singularity exec {params.sif} scSplit run -r {input.ref} -a {input.alt} -n {params.N} -o {params.out}
+        [[ -s {output.Psc} ]]
+        [[ -s {output.result} ]]
+        echo $?
+        """
+
+##### scSplit Get Genotypes #####
+rule scSplit_genotypes:
+    input:
+        alt=outdir + "/scSplit/{pool}/alt_filtered.csv",
+        ref=outdir + "/scSplit/{pool}/ref_filtered.csv",
+        demultiplex=outdir + "/scSplit/{pool}/scSplit_P_s_c.csv"
+    output:
+        outdir + "/scSplit/{pool}/scSplit.vcf"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 36,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 36
+    threads: 2
+    params:
+        out=outdir + "/scSplit/{pool}/",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    shell:
+        """
+        singularity exec {params.sif} scSplit genotype -r {input.ref} -a {input.alt} -p {input.demultiplex} -o {params.out}
+        [[ -s {output} ]] 
+        echo $?
+        """
+
+###################################
+############# POPSCLE #############
+###################################
+
+###### popscle Preprocessing ######
+rule popscle_pileup:
+    input:
+        vcf = SNP,
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool],
+        bam = lambda wildcards: scrnaseq_libs_df["Bam_Files"][wildcards.pool]
+    output:
+        directory(outdir + "/popscle/pileup/{pool}/")
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 56,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 56
+    threads: 10
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    shell:
+        """
+        singularity exec {params.sif} popscle dsc-pileup --sam {input.bam} --vcf {input.vcf} --group-list {input.barcodes} --out {output}pileup
+        [[ -s {output}pileup.var.gz ]]
+        echo $?
+        """
+
+##### Popscle Freemuxlet Demultiplexing #####
+rule popscle_freemuxlet:
+    input:
+        pileup = outdir + "/popscle/pileup/{pool}/",
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool]
+    output:
+        outdir + "/popscle/freemuxlet/{pool}/freemuxletOUT.clust1.samples.gz"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 36,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 36
+    threads: 1
+    params:
+        out=outdir + "/popscle/freemuxlet/{pool}/freemuxletOUT",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        N=lambda wildcards: samples.N[samples.Pool == wildcards.pool].iloc[0]
+    shell:
+        """
+        singularity exec {params.sif} popscle freemuxlet --plp {input.pileup}pileup --out {params.out} --group-list {input.barcodes} --nsample {params.N}
+        """
+
+##### Popscle Demuxlet Demultiplexing #####
+rule popscle_demuxlet:
+    input:
+        pileup = outdir + "/popscle/pileup/{pool}/",
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool],
+        snps=SNP
+    output:
+        outdir + "/popscle/demuxlet/{pool}/Imputed_GPdemuxletOUT.best"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 36,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 36
+    threads: 1
+    params:
+        out=outdir + "/popscle/demuxlet/{pool}/Imputed_GPdemuxletOUT",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        field="GP"
+    shell:
+        """
+        singularity exec {params.sif} popscle demuxlet --plp {input.pileup}pileup  --vcf {input.snps} --field {params.field} --geno-error-coeff 1.0 --geno-error-offset 0.05 --out {params.out} --group-list {input.barcodes}
+        [[ -s {output} ]]
+        echo $?
+        """
+    
+###################################
+############## VIREO ##############
+###################################
+
+####### vireo Preprocessing #######
+rule cellSNP:
+    input:
+        vcf = SNP,
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool],
+        bam = lambda wildcards: scrnaseq_libs_df["Bam_Files"][wildcards.pool]
+    output:
+        outdir + "/vireo/{pool}/cellSNPpileup.vcf.gz"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 36,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 36
+    threads: 5
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        p=20,
+        maf=0.1,
+        count=20
+    shell:
+        "singularity exec {params.sif} cellSNP -s {input.bam} -b {input.barcodes} -o {output} -R {input.vcf} -p {params.p} --minMAF {params.maf} --minCOUNT {params.count}"
+
+##### Vireo, prepare imputed #####
+rule vireo_prep_vcf:
+    input:
+        cluster_geno = outdir + "/vireo/{pool}/cellSNPpileup.vcf.gz",
+        vcf = SNP + ".gz"
+    output:
+        outdir + "/vireo/{pool}/cellSNPpileup_SUBmerged.vcf.gz"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 36,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 36
+    threads: 2
+    params:
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif"
+    shell:
+        """
+        singularity exec {params.sif} bcftools view -R {input.cluster_geno} -Oz -o {output} {input.vcf}
+        """
+
+
+
+##### Vireo demultiplexing #####
+rule vireo:
+    input:
+        pileup = outdir + "/vireo/{pool}/cellSNPpileup.vcf.gz",
+        vcf = outdir + "/vireo/{pool}/cellSNPpileup_SUBmerged.vcf.gz"
+    output:
+        outdir + "/vireo/{pool}/results/donor_ids.tsv"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 36,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 36
+    threads: 2
+    params:
+        out=outdir + "/vireo/{pool}/results/",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        field="GP",
+        N=lambda wildcards: samples.N[samples.Pool == wildcards.pool].iloc[0]
+    shell:
+        """
+        singularity exec {params.sif} vireo -c {input.pileup} -o {params.out} -t {params.field} -N {params.N} --noPlot -d {input.vcf}
+        [[ -s {output} ]]
+        echo $?
+        """
+
+####################################
+############ SOUPORCELL ############
+####################################
+
+###### souporcell pipeline ########
+rule souporcell:
+    input:
+        bam = lambda wildcards: scrnaseq_libs_df["Bam_Files"][wildcards.pool],
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool],
+        fasta = FASTA,
+        snps = SNP
+    threads: 8
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 10,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 10
+    output:
+        clusters=outdir + "/souporcell/{pool}/clusters.tsv"
+    params:
+        barcodes_tsv = outdir + "/souporcell/{pool}/barcodes.tsv",
+        out=outdir + "/souporcell/{pool}/",
+        sif="/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/AllSoftwares.sif",
+        N=lambda wildcards: samples.N[samples.Pool == wildcards.pool].iloc[0]
+    shell:
+        """
+        gunzip < {input.barcodes} > {params.barcodes_tsv}
+        singularity exec {params.sif} souporcell_pipeline.py -i {input.bam} -b {params.barcodes_tsv} -f {input.fasta} -t {threads} -o {params.out} -k {params.N} --common_variants {input.snps}
+        """
+
+
+###########################################
+############ DOUBLET DETECTION ############
+###########################################
+rule DoubletDetection:
+    input:
+        matrix = lambda wildcards: scrnaseq_libs_df["Matrix_Files"][wildcards.pool],
+        barcodes = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool]
+    output:
+        doublets = outdir + "/DoubletDetection/{pool}/DoubletDetection_results.txt",
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 10,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 10
+    threads: 2
+    params:
+        matrix_dir = lambda wildcards: scrnaseq_libs_df["Matrix_Directories"][wildcards.pool],
+        out = outdir + "/DoubletDetection/{pool}/",
+        script = "/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/scripts/ONEK1K/hg38/refSNVs/sceQTL-Gen-Demultiplex/scripts/DoubletDetection.py",
+        sif = "/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/Singularity_Buckets/docker/DoubletDetection.sif",
+        pipeline_dir = "/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/scripts/ONEK1K/hg38/refSNVs/sceQTL-Gen-Demultiplex/"
+    shell:
+        """
+        singularity exec {params.sif} python {params.script} --counts_matrix {input.matrix} --barcodes {input.barcodes} -o {params.out} -d {params.pipeline_dir}
+        """
+
+
+
+#################################
+############ COMBINE ############
+#################################
+rule freemuxlet_results_temp:
+    input:
+        freemuxlet = outdir + "/popscle/freemuxlet/{pool}/freemuxletOUT.clust1.samples.gz"
+    output:
+        freemuxlet_temp = outdir + "/CombinedResults/{pool}/freemuxlet_temp.txt"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    threads: 1
+    shell:
+        """
+        gunzip -c {input.freemuxlet} | awk 'BEGIN{{OFS=FS="\\t"}}{{print $2,$3,$5,$6,$14,$19,$20 }}' | sed "s/SNG/singlet/g" | sed "s/DBL/doublet/g" | sed "s/AMB/unassigned/g" | awk 'BEGIN{{FS=OFS="\\t"}} $3=="doublet" {{$4="doublet"}}1' | awk 'BEGIN{{FS=OFS="\\t"}} $3=="unassigned" {{$4="unassigned"}}1' | sed -E "s/,[0-9]+\t/\t/g" | sed "s/NUM.SNPS/nSNP/g" | sed "s/DROPLET.TYPE/DropletType/g" | sed "s/BEST.GUESS/Assignment/g" | sed "s/singlet.BEST.LLK/SingletLLK/g" | sed "s/doublet.BEST.LLK/DoulbetLLK/g" | sed "s/DIFF.LLK.singlet.doublet/DiffLLK/g" | sed "s/BARCODE/Barcode/g" | sed "1s/\t/\tfreemuxlet_/g" | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1,1"}}' > {output.freemuxlet_temp}
+        """
+
+rule demuxlet_results_temp:
+    input:
+        demuxlet = outdir + "/popscle/demuxlet/{pool}/Imputed_GPdemuxletOUT.best"
+    output:
+        demuxlet_temp = outdir + "/CombinedResults/{pool}/demuxlet_temp.txt"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    threads: 1
+    shell:
+        """
+        awk 'BEGIN{{OFS=FS="\\t"}}{{print $2,$3,$4,$5,$13,$14,$19,$20}}' {input.demuxlet} | sed "s/SNG/singlet/g" | sed "s/DBL/doublet/g" | sed "s/AMB/unassigned/g" | awk 'BEGIN{{FS=OFS="\\t"}} $3=="doublet" {{$4="doublet"}}1' | awk 'BEGIN{{FS=OFS="\\t"}} $3=="unassigned" {{$4="unassigned"}}1' | sed -E "s/,[0-9]+\t/\t/g" | sed "s/NUM.SNPS/nSNP/g" | sed "s/DROPLET.TYPE/DropletType/g" | sed "s/singlet.BEST.GUESS/Assignment/g" | sed "s/singlet.BEST.LLK/SingletLLK/g" | sed "s/doublet.BEST.LLK/DoulbetLLK/g" | sed "s/DIFF.LLK.singlet.doublet/DiffLLK/g" | sed "s/BARCODE/Barcode/g" | sed "s/NUM.READS/nReads/g" | sed "1s/\t/\tdemuxlet_/g" | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1,1"}}' > {output.demuxlet_temp}
+        """
+
+rule scSplit_results_temp:
+    input:
+        scSplit = outdir + "/scSplit/{pool}/scSplit_result.csv"
+    output:
+        scSplit_temp = outdir + "/CombinedResults/{pool}/scSplit_temp.txt"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    threads: 1
+    shell:
+        """
+        sed -E 's/\tDBL-[0-9]+/\tdoublet\tdoublet/g' {input.scSplit} | sed 's/SNG-/singlet\t/g' | sed 's/Cluster/DropletType\tAssignment/g' | sed "1s/\t/\tscSplit_/g" | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1,1"}}' > {output.scSplit_temp}
+        """
+
+rule souporcell_results_temp:
+    input:
+        souporcell = outdir + "/souporcell/{pool}/clusters.tsv"
+    output:
+        souporcell_temp = outdir + "/CombinedResults/{pool}/souporcell_temp.txt"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    threads: 1
+    shell:
+        """
+        awk 'BEGIN{{OFS=FS="\\t"}}{{print $1,$2,$3,$4,$5}}' {input.souporcell} | awk 'BEGIN{{FS=OFS="\t"}} $2=="doublet" {{$3="doublet"}}1' | awk 'BEGIN{{FS=OFS="\t"}} $2=="unassigned" {{$4="unassigned"}}1' | sed "s/status/DropletType/g" | sed "s/assignment/Assignment/g" | sed "s/log_prob_singleton/LogProbSinglet/g" | sed "s/log_prob_doublet/LogProbDoublet/g" | sed "s/barcode/Barcode/g" | sed "1s/\t/\tsouporcell_/g" | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1,1"}}' > {output.souporcell_temp}
+        """
+
+rule vireo_results_temp:
+    input:
+        vireo=outdir + "/vireo/{pool}/results/donor_ids.tsv"
+    output:
+        vireo_temp = outdir + "/CombinedResults/{pool}/vireo_temp.txt"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 1,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 1
+    threads: 1
+    shell:
+        """
+        awk 'BEGIN{{OFS=FS="\\t"}}{{print $1,$2,$2,$3,$4,$5}}' {input.vireo} | awk 'BEGIN{{FS=OFS="\\t"}}{{gsub("donor[0-9]+","singlet",$3)}}1' | awk 'BEGIN{{FS=OFS="\\t"}}{{gsub("[0-9]+_[0-9]+","singlet",$3)}}1' | sed "s/donor_id\tdonor_id/Assignment\tDropletType/g" | sed "s/prob_max/ProbSinglet/g" | sed "s/prob_doublet/ProbDoublet/g" | sed "s/n_vars/nSNP/g" | sed "s/cell/Barcode/g" | sed "1s/\t/\tvireo_/g" | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1,1"}}' > {output.vireo_temp}
+        """
+
+
+rule DoubletDetection_results_temp:
+    input:
+        barcode = lambda wildcards: scrnaseq_libs_df["Barcode_Files"][wildcards.pool],
+        results = outdir + "/DoubletDetection/{pool}/DoubletDetection_results.txt"
+    output:
+        outdir + "/CombinedResults/{pool}/DoubletDetection_temp.txt"
+    resources:
+        mem_per_thread_gb=1,
+        disk_per_thread_gb=1
+    threads: 1
+    shell:
+        """
+        awk 'NR<2{{print $0;next}}{{print $0| "sort -k1,1"}}' {input.results} > {output}
+        """
+
+
+
+rule join_demultiplex:
+    input:
+        demuxlet = outdir + "/CombinedResults/{pool}/demuxlet_temp.txt",
+        freemuxlet = outdir + "/CombinedResults/{pool}/freemuxlet_temp.txt",
+        scSplit = outdir + "/CombinedResults/{pool}/scSplit_temp.txt",
+        souporcell = outdir + "/CombinedResults/{pool}/souporcell_temp.txt",
+        vireo = outdir + "/CombinedResults/{pool}/vireo_temp.txt",
+        DoubletDetection = outdir + "/CombinedResults/{pool}/DoubletDetection_temp.txt"
+    output:
+        outdir +  "/CombinedResults/{pool}/CombinedDropletAssignments.tsv"
+    resources:
+        mem_per_thread_gb=lambda wildcards, attempt: attempt * 5,
+        disk_per_thread_gb=lambda wildcards, attempt: attempt * 5
+    threads: 1
+    shell:
+        """
+            join -a1 -a2 -1 1 -2 1 -t "\t" -e"NA" -o "0,1.2,1.3,1.4,1.5,1.6,1.7,2.2,2.3" {input.freemuxlet} {input.scSplit} | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1"}}' | \
+            join -a1 -a2 -1 1 -2 1 -t "\t" -e"NA" -o "0,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,2.2,2.3,2.4,2.5" - {input.souporcell} | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1"}}' | \
+            join -a1 -a2 -1 1 -2 1 -t "\t" -e"NA" -o "0,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,1.10,1.11,1.12,1.13,2.2,2.3,2.4,2.5,2.6" - {input.vireo} | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1"}}' | \
+            join -a1 -a2 -1 1 -2 1 -t "\t" -e"NA" -o "0,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,1.10,1.11,1.12,1.13,1.14,1.15,1.16,1.17,1.18,2.2,2.3,2.4,2.5,2.6,2.7" - {input.demuxlet} | awk 'NR<2{{print $0;next}}{{print $0| "sort -k1"}}' | \
+            join -a1 -a2 -1 1 -2 1 -t "\t" -e"NA" -o "0,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9,1.10,1.11,1.12,1.13,1.14,1.15,1.16,1.17,1.18,1.19,1.20,1.21,1.22,1.23,1.24,2.2" - {input.DoubletDetection} > {output}
+        """
+       
+ 
