@@ -7,11 +7,24 @@
 # stage="SCTnormalization_CellCycle_AllTime"
 # stage="SCTnormalization_CellCycle_integrated_Time"
 # stage="SCTnormalization_CellCycle_integrated_Time_Multi_Resolution"
-stage="SCTnormalization_CellCycle_integrated_Time_Clustree"
+# stage="SCTnormalization_CellCycle_integrated_Time_Clustree"
 # stage="SCTnormalization_CellCycle_integrated_Individual"
 # stage="SCTnormalization_CellCycle_integrated_Individual_Multi_Resolution"
 # stage="SCTnormalization_CellCycle_integrated_Individual_Clustree"
-
+# stage="SCTnormalization_Baseline_CellCycle_integrated_Individual"
+# stage="SCTnormalization_Baseline_CellCycle_integrated_Individual_Multi_Resolution"
+# stage="SCTnormalization_Baseline_CellCycle_integrated_Individual_Clustree"
+# stage="SCTnormalization_Baseline_CellCycle_integrated_Individual_DE"
+# stage="Make_Final_Brisbane_Seurat"
+# stage="Make_Final_Brisbane_Baseline_Seurat"
+# stage="SCTnormalization_CellCycle_Pool_integrated_Time"
+# stage="SCTnormalization_Baseline_CellCycle_Pool_integrated_Time"
+# stage="SCTnormalization_Baseline_CellCycle_Pool_mt_integrated_Time"
+# stage="SCTnormalization_Baseline_CellCycle_Pool_mt_integrated_Time_Multi_Resolution"
+# stage="SCTnormalization_Baseline_CellCycle_Pool_mt_integrated_Time_Clustree"
+# stage="SCTnormalization_Baseline_CellCycle_Pool_mt_integrated_Time_DE"
+stage="Make_Brisbane_Baseline_Seurat_covs_res_0.13"
+# stage="Make_Brisbane_Baseline_Seurat_covs_res_0.2"
 
 echo $stage
 
@@ -42,10 +55,11 @@ cd $OUT
 
 
 
-if [[ $stage == "SCTnormalization_CellCycle_integrated_Time_Multi_Resolution" ]] || [[ $stage == "SCTnormalization_CellCycle_integrated_Individual_Multi_Resolution" ]]
+if [[ $stage == "SCTnormalization_CellCycle_integrated_Time_Multi_Resolution" ]] || [[ $stage == "SCTnormalization_CellCycle_integrated_Individual_Multi_Resolution" ]] || [[ $stage == "SCTnormalization_Baseline_CellCycle_integrated_Individual_Multi_Resolution" ]] || [[ $stage == "SCTnormalization_Baseline_CellCycle_Pool_mt_integrated_Time_Multi_Resolution" ]]
 then
         PE=1
         T=1-16
+        T=27-36
         MEM=25G
         TEMP=25G
 else
@@ -55,10 +69,11 @@ else
         T=1-1
 fi
 
+MEM=5G
+TEMP=5G
 
 
 qsub -S /bin/bash \
-        -q short.q \
         -r yes \
         -l mem_requested=$MEM \
         -l tmp_requested=$TEMP \
@@ -66,11 +81,11 @@ qsub -S /bin/bash \
         -t $T \
         -cwd \
         -m e \
-        -hold_jid 360112 \
         -M d.neavin@garvan.org.au \
         -j y \
         -e $LOG \
         -o $LOG \
+		-q long.q \
         -V \
         -v DIR=$DIR,ARGfile=$ARGfile,ARGS=$ARGS,stage=$stage,today=$today,OUT=$OUT,DATA=$DATA,LOG=$LOG,PIPELINE=$PIPELINE \
         -C '' $PIPELINE

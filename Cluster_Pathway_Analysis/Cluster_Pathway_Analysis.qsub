@@ -1,0 +1,22 @@
+#!/bin/bash
+
+##### Before running for the first time:
+mkdir -p /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/scripts/Cluster_Pathway_Analysis/logs
+
+## SGE SETTINGS
+#$ -cwd
+#$ -S /bin/bash
+#$ -q long.q
+#$ -r yes
+#$ -l mem_requested=150G 
+#$ -l tmp_requested=150G
+#$ -N iPSC_Village
+#$ -e /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/scripts/Cluster_Pathway_Analysis/logs
+#$ -o /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/scripts/Cluster_Pathway_Analysis/logs
+#$ -j y
+#$ -M d.neavin@garvan.org.au
+
+##### If running on wolfpack 7 #####
+eval "$(conda shell.bash hook)"
+conda activate baseR402
+Rscript /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/scripts/Cluster_Pathway_Analysis/Cluster_Pathway_Analysis.R

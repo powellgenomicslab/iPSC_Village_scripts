@@ -1,0 +1,29 @@
+#!bin/bash
+
+##### Before running for the first time:
+    ### mkdir -p /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/scVelo/preprocess/logs
+
+
+## SGE SETTINGS
+#$ -cwd
+#$ -S /bin/bash
+#$ -q short.q
+#$ -r yes
+#$ -pe smp 32
+#$ -l mem_requested=10G 
+#$ -l tmp_requested=10G
+#$ -N salmon
+#$ -e /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/scVelo/preprocess/logs
+#$ -o /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/scVelo/preprocess/logs
+#$ -j y
+#$ -M d.neavin@garvan.org.au
+
+OUT="/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/scVelo/preprocess/"
+
+eval "$(conda shell.bash hook)"
+conda activate salmon
+
+	salmon index -t $OUT/combined_fasta.fa -i $OUT/gencode.v38.annotation.expanded.sidx --gencode -p 32
+
+
+conda deactivate
