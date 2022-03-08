@@ -136,7 +136,20 @@ indiv_prop_df_long <- separate(indiv_prop_df_long, sep = "\\.", col = "Category"
 indiv_prop_df_long$Location_Time <- gsub("Brisbane_", "Brisbane.", indiv_prop_df_long$Location_Time) %>%
                                 gsub("Sydney_", "Sydney.", .) %>%
                                 gsub("Melbourne_", "Melbourne.", .)
+
 indiv_prop_df_long$Location_Time <- factor(indiv_prop_df_long$Location_Time, levels = c("Brisbane.Baseline","Brisbane.Village_Day_4", "Melbourne.Baseline", "Melbourne.Village_Day_4", "Sydney.Baseline", "Sydney.Village_Day_4", "Sydney.Thawed_Village_Day_0", "Sydney.Thawed_Village_Day_7"))
+indiv_prop_df_long$Location_Rep_Time <- factor(paste0(indiv_prop_df_long$Location, "-", gsub("\\D+", "", indiv_prop_df_long$Site_rep), ".", indiv_prop_df_long$Time),levels = c("Site 1-1.Baseline", "Site 1-2.Baseline", "Site 1-3.Baseline",
+																																												"Site 1-1.Village_Day_4", "Site 1-2.Village_Day_4", "Site 1-3.Village_Day_4", 
+																																												"Site 2-1.Baseline", "Site 2-2.Baseline", "Site 2-3.Baseline",
+																																												"Site 2-1.Village_Day_4", "Site 2-2.Village_Day_4", "Site 2-3.Village_Day_4", 
+																																												"Site 3-1.Baseline", "Site 3-2.Baseline", "Site 3-3.Baseline",
+																																												"Site 3-1.Village_Day_4", "Site 3-2.Village_Day_4", "Site 3-3.Village_Day_4",
+																																												"Site 3-1.Thawed_Village_Day_0", "Site 3-2.Thawed_Village_Day_0", "Site 3-3.Thawed_Village_Day_0",
+																																												"Site 3-1.Thawed_Village_Day_7", "Site 3-2.Thawed_Village_Day_7", "Site 3-3.Thawed_Village_Day_7"))
+
+
+
+
 
 ### Make column for location only and update to sites 1, 2 and 3
 indiv_prop_df_long <- separate(indiv_prop_df_long, col = "Location_Time", sep = "\\.", into = c("Location", "Time"), remove = FALSE)
@@ -154,14 +167,33 @@ save_figs(cell_line_loc_time,  paste0(outdir,"cell_line_stacked_bar_location_tim
 
 
 
+cell_line_loc_time <- ggbarplot(indiv_prop_df_long, "Location_Rep_Time", "Proportion", fill = "CellLine") +
+    rotate_x_text(45) +
+    scale_fill_manual(values = cell_line_colors)
+
+save_figs(cell_line_loc_time,  paste0(outdir,"cell_line_stacked_bar_location_rep_time"))
+
+
 ## Proportion of cell lines for just first two timepoints (baseline and village day 4)
 indiv_prop_df_long$Time <- gsub("Village_Day_4", "Village", indiv_prop_df_long$Time)
+indiv_prop_df_long$Time_rep <- paste0(indiv_prop_df_long$Time, "-", gsub("\\D+", "", indiv_prop_df_long$Site_rep))
+
+
 cell_line_loc_time_first2 <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Time == "Baseline" | indiv_prop_df_long$Time == "Village"),], "Time", "Proportion", add = c("mean_se"), fill = "CellLine", facet.by = "Location", size = 0.25) +
     scale_fill_manual(values = cell_line_colors) +
 	rotate_x_text(45) +
 	theme(axis.title.x=element_blank())
 
 save_figs(cell_line_loc_time_first2,  paste0(outdir,"cell_line_stacked_bar_location_time_baseline_village_4days"), width = 6, height = 8)
+
+
+cell_line_loc_time_rep <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Time == "Baseline" | indiv_prop_df_long$Time == "Village"),], "Time_rep", "Proportion", fill = "CellLine", facet.by = "Location", size = 0.25) +
+    scale_fill_manual(values = cell_line_colors) +
+	rotate_x_text(45) +
+	theme(axis.title.x=element_blank())
+
+save_figs(cell_line_loc_time_rep,  paste0(outdir,"cell_line_stacked_bar_location_time_rep_baseline_village_4days"), width = 10, height = 8)
+
 
 
 ### Compare the FSA0006 level at baseline vs village ###
@@ -180,6 +212,17 @@ for (site in unique(indiv_prop_df_long$Location)){
 }
 
 fwrite(t_test_df, paste0(outdir,"hPSC_line_proportions.tsv"), sep = "\t")
+
+
+Mod <- glm(data = DF, cbind(irregular,regular) ~ Treat, family = "binomial") 
+summary(Mod)      #This prints the results, p.values and statistics. 
+exp(confint(Mod)) #This gives you the CIs for the different terms in the model
+
+
+
+
+
+
 
 
 ## Proportion of cell lines for Sydney

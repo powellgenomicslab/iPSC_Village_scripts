@@ -1,0 +1,19 @@
+#!/bin/bash
+
+##### Before running for the first time:
+
+## SGE SETTINGS
+#$ -cwd
+#$ -S /bin/bash
+#$ -q short.q
+#$ -r yes
+#$ -pe smp 4
+#$ -l mem_requested=10G 
+#$ -l tmp_requested=10G
+#$ -N iPSC_Village_zip
+#$ -e /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/logs
+#$ -o /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/logs
+#$ -j y
+#$ -M d.neavin@garvan.org.au
+
+tar -zcvf iPSC_Village_data.tar.gz /directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data
