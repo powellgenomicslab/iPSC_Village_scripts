@@ -42,3 +42,7 @@ seurat_noNA@meta.data$Location <- gsub("_Cryopreserved", "", seurat_noNA@meta.da
 
 
 saveRDS(seurat_noNA, paste0(outdir, "seurat_integrated_all_times_clustered_1pct_expressing_pseudotime.rds"))
+seurat_noNA <- readRDS(paste0(outdir, "seurat_integrated_all_times_clustered_1pct_expressing_pseudotime.rds"))
+
+
+fwrite(data.table(Gene = rownames(seurat_noNA)), paste0(outdir,"seurat_integrated_all_times_clustered_1pct_expressing_pseudotime.tsv"))

@@ -14,6 +14,8 @@ library(lmerTest)
 library(tictoc)
 library(Rfast)
 library(sjstats)
+library(car)
+library(data.table)
 
 
 
@@ -405,6 +407,89 @@ sum(icc_glmmtmb(model_glmmtmb_mt)$vcov)
 model_glmmtmb_short <- glmmTMB(Expression ~ (1 | Replicate) + (1 | Village) + (1 | Line) + (1 | Site), data = df_hier_unscale, REML = TRUE)
 model_glmmtmb_short_interaction <- glmmTMB(Expression ~ (1 | Replicate) + (1 | Village) + (1 | Line) + (1 | Site) + (1 | Village:Line), data = df_hier_unscale, REML = TRUE)
 
-anova(model_glmmtmb_short, model_glmmtmb_short_interaction)$`Pr(>Chisq)`
+anova(model_glmmtmb_short, model_glmmtmb_short_interaction)$`Pr(>Chisq)` ### the order of testing matters!!!
 
-ranova_mt <- ranova(model_glmmtmb_mt)
+
+
+# ranova_mt <- ranova(model_glmmtmb_mt)
+
+
+##### Leave one out method #####
+variables <- c("Replicate", "Village", "Line", "Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Village:Line", "Village:Site", "Line:Site")
+
+model_loo <- list()
+
+sig_dt <- data.table(var = variables, P = as.numeric(NA))
+
+for (variable in variables){
+    print(variable)
+    model <- as.formula(paste0("Expression ~ (1|", paste0(variables[!variables %in% variable], collapse = ") + (1|"), ")"))
+    model_loo[[variable]] <- glmmTMB(formula = noquote(model), data = df_hier_unscale, REML = TRUE)
+    sig_dt[var == variable]$P <- anova(model_loo[[variable]], model_glmmtmb)$`Pr(>Chisq)`[2]
+}
+
+
+updated_variables <- sig_dt[P < 0.05/10]$var
+updated_model <- as.formula(paste0("Expression ~ (1|", paste0(updated_variables, collapse = ") + (1|"), ")"))
+
+final_full_model <- glmmTMB(formula = noquote(updated_model), data = df_hier_unscale, REML = TRUE)
+
+icc_glmmtmb(final_full_model)
+
+model_loo_updated <- list()
+
+sig_dt_updated <- data.table(var = variables, P = as.numeric(NA))
+
+for (variable in updated_variables){
+    print(variable)
+    model <- as.formula(paste0("Expression ~ (1|", paste0(updated_variables[!updated_variables %in% variable], collapse = ") + (1|"), ")"))
+    model_loo_updated[[variable]] <- glmmTMB(formula = noquote(model), data = df_hier_unscale, REML = TRUE)
+    sig_dt_updated[var == variable]$P <- anova(model_loo_updated[[variable]], final_full_model)$`Pr(>Chisq)`[2]
+}
+
+
+### Test mt gene
+model_loo_mt <- list()
+
+sig_dt_mt <- data.table(var = variables, P = as.numeric(NA))
+
+for (variable in variables){
+    print(variable)
+    model <- as.formula(paste0("Expression ~ (1|", paste0(variables[!variables %in% variable], collapse = ") + (1|"), ")"))
+    model_loo_mt[[variable]] <- glmmTMB(formula = noquote(model), data = df_hier_unscale_mt, REML = TRUE)
+    sig_dt_mt[var == variable]$P <- anova(model_loo_mt[[variable]], model_glmmtmb_mt)$`Pr(>Chisq)`[2]
+}
+
+
+updated_variables_mt <- sig_dt_mt[P < 0.05/10]$var
+updated_model_mt<- as.formula(paste0("Expression ~ (1|", paste0(updated_variables_mt, collapse = ") + (1|"), ")"))
+
+final_full_model_mt <- glmmTMB(formula = noquote(updated_model_mt), data = df_hier_unscale_mt, REML = TRUE)
+
+icc_glmmtmb(final_full_model_mt)
+
+model_loo_mt_updated <- list()
+
+sig_dt_mt_updated <- data.table(var = variables, P = as.numeric(NA))
+
+for (variable in updated_variables){
+    print(variable)
+    model <- as.formula(paste0("Expression ~ (1|", paste0(updated_variables[!updated_variables %in% variable], collapse = ") + (1|"), ")"))
+    model_loo_mt_updated[[variable]] <- glmmTMB(formula = noquote(model), data = df_hier_unscale_mt, REML = TRUE)
+    sig_dt_mt_updated[var == variable]$P <- anova(model_loo_mt_updated[[variable]], final_full_model)$`Pr(>Chisq)`[2]
+}
+
+
+
+### Check if order of fixed effects impacts the residuals (will save to be used for eQTL detection) ###
+model_fixed <- as.formula(paste0("Expression ~ ", paste0(variables, collapse = " + ")))
+model_random <- as.formula(paste0("Expression ~ (1|", paste0(variables, collapse = ") + (1|"), ")"))
+model_glmmtmb_fixed <- glmmTMB(model, data = df_hier_unscale_mt, REML = TRUE)
+model_glmmtmb_random <- glmmTMB(model, data = df_hier_unscale_mt, REML = TRUE)
+
+
+all(resid(model_glmmtmb_fixed) == resid(model_glmmtmb_random))
+
+
+
+model_glmmtmb_mt <- glmmTMB(Expression ~ (1 | Replicate) + (1 | Village) + (1 | Line) + (1 | Site) + (1|Replicate:Village) + (1|Replicate:Line) + (1|Replicate:Site) + (1|Village:Line) + (1|Village:Site) + (1|Line:Site), data = df_hier_unscale_mt, REML = TRUE)

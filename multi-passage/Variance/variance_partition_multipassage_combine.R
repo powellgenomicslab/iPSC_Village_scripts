@@ -18,25 +18,29 @@ library(RColorBrewer)
 
 ##### Set up directories #####
 dir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/"
-icc_dir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/variance_partition_post_review2/gene_separated/icc/"
-icc_interaction_dir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/variance_partition_post_review2/gene_separated/icc_interaction/"
-outdir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/variance_partition_post_review2/combined/"
+icc_dir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/gene_separated/icc/"
+icc_dir2 <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance/gene_separated/icc/"
+icc_interaction_dir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/gene_separated/icc_interaction/"
+outdir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/combined/"
+outdir_comparison <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/comparison/"
 
 dir.create(outdir, recursive = TRUE)
+dir.create(outdir_comparison, recursive = TRUE)
 
 
-vars <- c("Line", "Village", "Cryopreserved", "Site",  "Replicate","Line:Village", "Line:Cryopreserved", "Line:Site", "Village:Cryopreserved","Village:Site",  "Replicate:Village", "Replicate:Line","Replicate:Cryopreserved",  "Replicate:Site", "Residual")
-# var_colors <- c(colorRampPalette(brewer.pal(11, "Spectral"))(14), "grey90")
-var_colors <- c("#4734a9", rev(c("#115cc7", "#a4c3c8", "#499090", "#405940", "#685a54", "#f7d312", "#f8bf33", "#e4910e", "#f65d19", "#931519", "#f2c1ce", "#e17aab", "#a186aa")), "gray80")
-# var_colors <- c("#a2104d", "#fde64b", "#3e90c1", "#358856", "#f5764e", "#685ba6", "#728d01", "#abd302", "#8b6248", "#6ec4aa", "gray90")
+vars <- c("Line", "Passage", "Line:Passage", "Residual")
+selected_vars <- c("Line", "Passage", "Line:Passage", "Residual")
+var_colors <- c("#4734a9", "#78c0fe", "#97cf8a", "gray80")
+
 names(var_colors) <- vars
 
-var_colors <- var_colors[c("Line", "Village", "Site",  "Replicate","Line:Village", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Residual")]
+var_colors <- var_colors[selected_vars]
 
 
 
 ##### Get list of icc files #####
 icc_files <- list.files(icc_dir)
+# icc_files2 <- list.files(icc_dir2)
 
 
 
@@ -45,6 +49,11 @@ icc_results_list <- lapply(icc_files, function(x){
     readRDS(paste0(icc_dir,x))
 })
 names(icc_results_list) <- icc_files
+
+# icc_results_list2 <- lapply(icc_files2, function(x){
+#     readRDS(paste0(icc_dir2,x))
+# })
+# names(icc_results_list2) <- icc_files2
 
 
 
@@ -63,10 +72,55 @@ names(icc_interaction_results_list) <- icc_interaction_files
 
 ##### Merge icc results into a single data.table #####
 icc_dt <- do.call(rbind, icc_results_list)
+# icc_dt2 <- do.call(rbind, icc_results_list2)
+# colnames(icc_dt2) <- paste0("integrate_sct_", colnames(icc_dt2))
+
+
+# icc_dt_joined <- icc_dt[icc_dt2, on = c("grp" = "integrate_sct_grp", "gene" = "integrate_sct_gene")]
+# icc_dt_joined$diff <- icc_dt_joined$percent - icc_dt_joined$integrate_sct_percent
+# max(na.omit(icc_dt_joined$diff))
+
+# icc_dt_joined[diff == max(na.omit(icc_dt_joined$diff))]
+
+# icc_dt_joined[gene == "ENSG00000106153"]
+
+
+# diff_dist <- ggplot(icc_dt_joined, aes(diff)) +
+#     geom_histogram() +
+#     facet_wrap(vars(grp))
+#     # theme_classic()
+
+# ggsave(diff_dist, filename = paste0(outdir_comparison, "diff_histogram.png"))
+
+
+# scatter <- ggplot(icc_dt_joined, aes(percent,integrate_sct_percent)) +
+#     geom_point() +
+#     facet_wrap(vars(grp), scales = "free") +
+#     theme_classic()
+
+# ggsave(scatter, filename = paste0(outdir_comparison, "scatter_correlation.png"), height = 4.5)
+
+
+# icc_dt_joined_long <- melt(icc_dt_joined, id.vars = c("grp", "gene"),measure.vars = c("percent", "integrate_sct_percent"))
+
+
+# dist <- ggplot(icc_dt_joined_long, aes(value)) +
+#     geom_histogram() +
+#     facet_grid(grp ~ variable) +
+#     theme_classic()
+
+# ggsave(dist, filename = paste0(outdir_comparison, "histogram.png"))
+
+
+# ### want to use the integrate_sct_percent
+# ### compared the two methods and appears that fitting when have been separately sct assessed =>  Line effect well correlated but time is much less (and not well correlated between the two methods) so likely inducing Time effects from normalizing all together
+
+
 
 icc_dt$percent_round <- round(icc_dt$percent)
 
-icc_dt$grp <- factor(icc_dt$grp, levels= rev(c("Line", "Village", "Site",  "Replicate","Line:Village", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Residual")))
+icc_dt$grp <- gsub("Time", "Passage", icc_dt$grp)
+icc_dt$grp <- factor(icc_dt$grp, levels= rev(c("Line", "Passage", "Line:Passage", "Residual")))
 
 group_size  <- data.table(table(icc_dt$grp))
 colnames(group_size) <- c("grp", "size")
@@ -76,14 +130,13 @@ icc_dt <- group_size[icc_dt, on = "grp"]
 icc_dt$grp_size <- factor(icc_dt$grp_size, levels = unique(group_size$grp_size))
 
 
-
-
 ##### Merge icc_interaction results into a single data.table #####
 icc_interaction_dt <- do.call(rbind, icc_interaction_results_list)
 
 icc_interaction_dt$percent_round <- round(icc_interaction_dt$percent)
 
-icc_interaction_dt$grp <- factor(icc_interaction_dt$grp, levels= rev(c("Line", "Village", "Site",  "Replicate","Line:Village", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Residual")))
+icc_interaction_dt$grp <- gsub("Time", "Passage", icc_interaction_dt$grp)
+icc_interaction_dt$grp <- factor(icc_interaction_dt$grp, levels= rev(c("Line", "Passage", "Line:Passage", "Residual")))
 
 group_size  <- data.table(table(icc_interaction_dt$grp))
 colnames(group_size) <- c("grp", "size")
@@ -94,9 +147,6 @@ icc_interaction_dt$grp_size <- factor(icc_interaction_dt$grp_size, levels = uniq
 
 ### *** Need to add individual effects without interaction in to interaction dt *** ###
 icc_interaction_plus_dt <- rbind(icc_interaction_dt, icc_dt[!(gene %in% icc_interaction_dt$gene)])
-
-fwrite(icc_interaction_plus_dt, paste0(outdir, "effect_results.tsv"), sep = "\t")
-icc_interaction_plus_dt <- fread(paste0(outdir, "effect_results.tsv"), sep = "\t")
 
 
 group_size  <- data.table(table(icc_interaction_plus_dt$grp))
@@ -114,8 +164,7 @@ icc_interaction_dt_joined <- icc_dt[icc_interaction_dt, on = c("grp", "gene")]
 icc_interaction_dt_joined$difference <- icc_interaction_dt_joined$percent - icc_interaction_dt_joined$i.percent
 
 
-
-pRaincloud_dif <- ggplot(icc_interaction_dt_joined, aes(x = difference, y = factor(grp_size, levels = rev(levels(grp_size))), fill = factor(grp, levels = rev(vars)))) + 
+pRaincloud_dif <- ggplot(icc_interaction_dt_joined, aes(x = difference, y = factor(grp_size, levels = rev(levels(grp_size))), fill = factor(grp, levels = rev(selected_vars)))) + 
                 geom_density_ridges(stat = "binline", bins = 90, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
                 geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
@@ -130,12 +179,11 @@ ggsave(pRaincloud_dif, filename = paste0(outdir, "variance_explained_interaction
 
 
 
-
 ##### Make a figure of stacked variance explained #####
 ### Order based on line variance explained ###
 genes_list <- list()
 
-for (group in c("Line", "Village", "Site",  "Replicate","Village:Line", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Residual")){
+for (group in c("Line", "Passage", "Line:Passage", "Residual")){
     genes_list[[group]] <- icc_dt[grp == group][rev(order(percent_round))]$gene
 }
 
@@ -143,6 +191,7 @@ genes <- unique(unlist(genes_list))
 
 icc_dt$gene <- factor(icc_dt$gene, levels = genes)
 
+icc_dt$grp <- factor(icc_dt$grp, levels= rev(c("Line", "Passage", "Line:Passage", "Residual")))
 
 
 ## First on line percent, then village percent ##
@@ -151,7 +200,9 @@ bar_proportions <- ggplot(icc_dt, aes(x = gene, y = percent, fill = grp)) +
     theme_classic() +
     theme(axis.title.x=element_blank(),
         axis.text.x=element_blank(),
-        axis.ticks.x=element_blank())
+        axis.ticks.x=element_blank()) +
+    scale_fill_manual(values = var_colors)
+
 
 ggsave(bar_proportions, filename = paste0(outdir, "variance_explained_bar.png"), width = 20)
 
@@ -163,9 +214,12 @@ boxplot <- ggplot(icc_dt, aes(x = factor(grp, levels = rev(levels(grp))), y = pe
     theme_classic() +
     xlab("Covariate") +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        legend.position="none")
+        legend.position="none") +
+    scale_fill_manual(values = var_colors) +
+    scale_color_manual(values = var_colors)
+    
 
-ggsave(boxplot, filename = paste0(outdir, "variance_explained_box.png"), height = 4, width = 5)
+ggsave(boxplot, filename = paste0(outdir, "variance_explained_box.png"), height = 3, width = 2)
 
 
 ### Try ridgplots ###
@@ -185,55 +239,65 @@ pRidges_pop <- ggplot(icc_dt[grp != "Residual"][percent > 10], aes(x = percent, 
 ggsave(pRidges_pop, filename = paste0(outdir, "variance_explained_ridge_pop.png"), height = 8, width = 10)
 
 
+# pRaincloud <- ggplot(icc_dt, aes(x = percent, y = factor(grp_size, levels = rev(levels(grp_size))), fill = factor(grp, levels = rev(vars)))) + 
+#                 geom_density_ridges(stat = "binline", bins = 90, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
+#                 geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
+#                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
+#                 theme_classic() +
+#                 theme(axis.title.y=element_blank()) +
+#                 xlab("Percent Variance Explained") +
+#                 scale_y_discrete(expand = c(0.03, 0)) +
+#                 scale_fill_manual(values = var_colors)
 
 pRaincloud <- ggplot(icc_dt, aes(x = percent, y = factor(grp_size, levels = rev(levels(grp_size))), fill = factor(grp, levels = rev(vars)))) + 
-                geom_density_ridges(stat = "binline", bins = 90, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
-                geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
-                coord_cartesian(xlim = c(1.2, NA), clip = "off") +
-                theme_classic() +
-                theme(axis.title.y=element_blank()) +
-                xlab("Percent Variance Explained") +
-                scale_y_discrete(expand = c(0.03, 0)) +
-                scale_fill_manual(values = var_colors)
-
-ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.png"), height = 8, width = 7)
-ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.pdf"), height = 8, width = 7)
-
-
-icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, levels = c(unique(grep("^Line\nN = ", icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("^Village\nN = ",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("^Site\nN = ",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("^Replicate\nN =",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Line:Village\nN =",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Line:Site\nN =",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Village:Site\nN =",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Replicate:Village\nN ",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Replicate:Line\nN ",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Replicate:Site\nN ",  icc_interaction_plus_dt$grp_size, value = TRUE)), 
-                                                                                       unique(grep("Residual\nN = ", icc_interaction_plus_dt$grp_size, value = TRUE))))
-
-pRaincloud_interaction <- ggplot(icc_interaction_plus_dt, aes(x = percent, y = factor(grp_size, levels = levels(grp_size)), fill = factor(grp, levels = rev(vars)))) + 
-                # geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
-                # geom_point(size =1,position = position_nudge(y=-0.1), shape = "|", aes(color = factor(grp, levels = rev(vars))), alpha = 0.75) +
                 geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..)) +
-                geom_point(size =1, position = position_nudge(y=-0.11), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
-                # geom_boxplot(size = 0.1,width = .15, outlier.size = 0.1, position = position_nudge(y=-0.12), alpha = 0.75) +
+                geom_point(size =1, position = position_nudge(y=-0.09), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
                 theme_classic() +
                 theme(axis.title.y=element_blank()) +
                 xlab("Percent Variance Explained") +
-                scale_y_discrete(expand = c(0.03, 0)) +
+                scale_y_discrete(expand = c(0.1, 0)) +
                 scale_fill_manual(values = var_colors, name = "Variable") +
                 scale_color_manual(values = var_colors, name = "Variable") +
                 geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
 
-
-ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.png"), height = 4, width = 7)
-ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.pdf"), height = 4, width = 7)
-
+ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.png"), height = 2, width = 5)
+ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.pdf"), height = 2, width = 5)
 
 
-##### Pull just the significant variances per gene #####
+
+icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, levels = c("Line\nN = 750", "Passage\nN = 750", "Line:Passage\nN = 619", "Residual\nN = 750"))
+
+
+# pRaincloud_interaction <- ggplot(icc_interaction_plus_dt, aes(x = percent, y = grp_size,  fill = factor(grp, levels = rev(vars)))) + 
+#                 geom_density_ridges(size = 0.1, stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity.., fill = factor(grp, levels = rev(vars))), alpha = 0.75) +
+#                 geom_boxplot(outlier.shape=20, size = 0.1,width = .15, outlier.size = 0.01, position = position_nudge(y=-0.12), alpha = 0.75) +
+#                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
+#                 theme_classic() +
+#                 theme(axis.title.y=element_blank()) +
+#                 xlab("Percent Variance Explained") +
+#                 scale_y_discrete(expand = c(0.03, 0)) +
+#                 scale_fill_manual(values = var_colors) +
+#                 scale_color_manual(values = var_colors) +
+#                 geom_vline(xintercept = 1,color = "grey70", size = 0.4, lty="11")
+
+pRaincloud_interaction <- ggplot(icc_interaction_plus_dt, aes(x = percent, y = factor(grp_size, levels = levels(grp_size)), fill = factor(grp, levels = rev(vars)))) + 
+                geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..)) +
+                geom_point(size =1, position = position_nudge(y=-0.09), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
+                coord_cartesian(xlim = c(1.2, NA), clip = "off") +
+                theme_classic() +
+                theme(axis.title.y=element_blank()) +
+                xlab("Percent Variance Explained") +
+                scale_y_discrete(expand = c(0.1, 0)) +
+                scale_fill_manual(values = var_colors, name = "Variable") +
+                scale_color_manual(values = var_colors, name = "Variable") +
+                geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
+
+ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.png"), height = 2, width = 4)
+ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.pdf"), height = 2, width = 4)
+
+
+
 icc_interaction_sig_list <- list()
 
 for (ensg in unique(icc_interaction_plus_dt$gene)){
@@ -252,23 +316,35 @@ group_size$grp_size <- paste0(group_size$grp, "\nN = ", group_size$size)
 icc_interaction_sig_dt <- group_size[icc_interaction_sig_dt, on = "grp"]
 icc_interaction_sig_dt$grp_size <- factor(icc_interaction_sig_dt$grp_size, levels = unique(group_size$grp_size))
 
+grp_size_order <- c("Line\nN = 750", "Passage\nN = 750", "Line:Passage\nN = 619", "Residual\nN = 750")
 
-grp_size_order <- c("Line\nN = 6177", "Village\nN = 3713", "Site\nN = 6143", "Replicate\nN = 2372", "Line:Village\nN = 1601", "Line:Site\nN = 4089", "Village:Site\nN = 3939","Replicate:Village\nN = 1343", "Replicate:Line\nN = 72", "Replicate:Site\nN = 302", "Residual\nN = 12161")
 
+
+# pRaincloud_interaction_sig <- ggplot(icc_interaction_sig_dt, aes(x = percent, y = factor(grp_size, levels = grp_size_order), fill = factor(grp, levels = rev(vars)))) + 
+#                 geom_density_ridges(stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
+#                 geom_boxplot(size = 0.5,width = .15, outlier.size = 0.15, position = position_nudge(y=-0.12), alpha = 0.75) +
+#                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
+#                 theme_classic() +
+#                 theme(axis.title.y=element_blank()) +
+#                 xlab("Percent Variance Explained") +
+#                 scale_y_discrete(expand = c(0.03, 0)) +
+#                 scale_fill_manual(values = var_colors) +
+#                 geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
 
 pRaincloud_interaction_sig <- ggplot(icc_interaction_sig_dt, aes(x = percent, y = factor(grp_size, levels = grp_size_order), fill = factor(grp, levels = rev(vars)))) + 
-                geom_density_ridges(stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
-                geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
+                geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..)) +
+                geom_point(size =1, position = position_nudge(y=-0.09), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
                 theme_classic() +
                 theme(axis.title.y=element_blank()) +
                 xlab("Percent Variance Explained") +
-                scale_y_discrete(expand = c(0.03, 0)) +
-                scale_fill_manual(values = var_colors) +
-                geom_vline(xintercept = 1, linetype = "dashed", color = "firebrick3")
+                scale_y_discrete(expand = c(0.07, 0)) +
+                scale_fill_manual(values = var_colors, name = "Variable") +
+                scale_color_manual(values = var_colors, name = "Variable") +
+                geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
 
-ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.png"), height = 8, width = 7)
-ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.pdf"), height = 8, width = 7)
+ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.png"), height = 2, width = 4)
+ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.pdf"), height = 2, width = 4)
 
 
 total <- icc_interaction_sig_dt[,.(count = .N), by = .(grp)]
@@ -286,20 +362,32 @@ summary$percent_5pct <- (summary$count_less_5pct/summary$count)*100
 summary$percent_10pct <- (summary$count_less_10pct/summary$count)*100
 
 
+# pRaincloud_interaction_sig_1pct <- ggplot(icc_interaction_sig_dt[percent >= 1], aes(x = percent, y = factor(grp_size, levels = grp_size_order), fill = factor(grp, levels = rev(vars)))) + 
+#                 geom_density_ridges(stat = "binline", bins = 90, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
+#                 geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
+#                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
+#                 theme_classic() +
+#                 theme(axis.title.y=element_blank()) +
+#                 xlab("Percent Variance Explained") +
+#                 scale_y_discrete(expand = c(0.03, 0)) +
+#                 scale_fill_manual(values = var_colors) +
+#                 geom_vline(xintercept = 1, linetype = "dashed", color = "firebrick3")
+
 pRaincloud_interaction_sig_1pct <- ggplot(icc_interaction_sig_dt[percent >= 1], aes(x = percent, y = factor(grp_size, levels = grp_size_order), fill = factor(grp, levels = rev(vars)))) + 
-                geom_density_ridges(stat = "binline", bins = 90, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
-                geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
+                geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..)) +
+                geom_point(size =1, position = position_nudge(y=-0.09), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
                 theme_classic() +
                 theme(axis.title.y=element_blank()) +
                 xlab("Percent Variance Explained") +
-                scale_y_discrete(expand = c(0.03, 0)) +
-                scale_fill_manual(values = var_colors) +
-                geom_vline(xintercept = 1, linetype = "dashed", color = "firebrick3") +
-                labs(fill="Covariate")
+                scale_y_discrete(expand = c(0.07, 0)) +
+                scale_fill_manual(values = var_colors, name = "Variable") +
+                scale_color_manual(values = var_colors, name = "Variable") +
+                geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
 
-ggsave(pRaincloud_interaction_sig_1pct, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant_1pct.png"), height = 8, width = 7)
-ggsave(pRaincloud_interaction_sig_1pct, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant_1pct.pdf"), height = 8, width = 7)
+ggsave(pRaincloud_interaction_sig_1pct, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant_1pct.png"), height = 2, width = 4)
+ggsave(pRaincloud_interaction_sig_1pct, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant_1pct.pdf"), height = 2, width = 4)
+
 
 
 
@@ -315,7 +403,7 @@ icc_interaction_sig_gw_dt <- group_size_sig_gw[icc_interaction_sig_gw_dt, on = "
 icc_interaction_sig_gw_dt$grp_size <- factor(icc_interaction_sig_gw_dt$grp_size, levels = unique(group_size_sig_gw$grp_size))
 
 
-group_size_sig_gw_order <- c("Line\nN = 7,220", "Village\nN = 4,332", "Site\nN = 7,104", "Replicate\nN = 2,843", "Line:Village\nN = 1,858", "Line:Site\nN = 4,358", "Village:Site\nN = 4,343","Replicate:Village\nN = 1,530", "Replicate:Line\nN = 95", "Replicate:Site\nN = 335", "Residual\nN = 12,161")
+group_size_sig_gw_order <- c("Line\nN = 750", "Passage\nN = 750", "Line:Passage\nN = 619", "Residual\nN = 750")
 
 
 pRaincloud_interaction_sig_gw <- ggplot(icc_interaction_sig_gw_dt, aes(x = percent, y = factor(grp_size, levels = group_size_sig_gw_order), fill = factor(grp, levels = rev(vars)))) + 
@@ -327,7 +415,8 @@ pRaincloud_interaction_sig_gw <- ggplot(icc_interaction_sig_gw_dt, aes(x = perce
                 xlab("Percent Variance Explained") +
                 scale_y_discrete(expand = c(0.03, 0)) +
                 scale_fill_manual(values = var_colors) +
-                geom_vline(xintercept = 1, linetype = "dashed", color = "firebrick3")
+                geom_vline(xintercept = 1, linetype = "dashed", color = "firebrick3") +
+                labs(fill="Covariate")
 
 ggsave(pRaincloud_interaction_sig_gw, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant_genome_wide.png"), height = 8, width = 7)
 ggsave(pRaincloud_interaction_sig_gw, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant_genome_wide.pdf"), height = 8, width = 7)
@@ -338,8 +427,26 @@ ggsave(pRaincloud_interaction_sig_gw, filename = paste0(outdir, "variance_explai
 
 
 
+
+
+
+
+
+
+
+
+
+
 icc_interaction_sig_dt[gene == "ENSG00000106153"]
 icc_dt[gene == "ENSG00000106153"]
+icc_interaction_plus_dt[gene == "ENSG00000106153"]
+icc_interaction_sig_gw_dt[gene == "ENSG00000106153"]
+icc_interaction_sig_gw_dt2[gene == "ENSG00000106153"]
+
+
+
+
+
 
 
 ##### Add gene IDs for easy identification downstream #####
@@ -358,15 +465,12 @@ GeneConversion <- data.table(GeneConversion)
 
 icc_interaction_sig_gw_dt <- GeneConversion[icc_interaction_sig_gw_dt, on = "gene"]
 
-icc_interaction_sig_gw_dt[grp == "Site"& percent_round > 1][rev(order(percent))]$Gene_ID
-head(icc_interaction_sig_gw_dt[grp == "Site" & percent_round > 1][rev(order(percent))][,c("Gene_ID", "percent_round")], n = 50)
+icc_interaction_sig_gw_dt[grp == "Cryopreserved"& percent_round > 1][rev(order(percent))]$Gene_ID
+head(icc_interaction_sig_gw_dt[grp == "Cryopreserved" & percent_round > 1][rev(order(percent))][,c("Gene_ID", "percent_round")], n = 50)
 icc_interaction_sig_gw_dt[grp == "Line"][rev(order(percent))]$Gene_ID
 head(icc_interaction_sig_gw_dt[grp == "Line" & percent_round > 1][rev(order(percent))][,c("Gene_ID", "percent_round")], n = 50)
 icc_interaction_sig_gw_dt[grp == "Village"][rev(order(percent))]$Gene_ID
 head(icc_interaction_sig_gw_dt[grp == "Village" & percent_round > 1][rev(order(percent))][,c("Gene_ID", "percent_round")], n = 50)
-head(icc_interaction_sig_gw_dt[grp == "Line:Village" & percent_round > 1][rev(order(percent))][,c("Gene_ID", "percent_round")], n = 50)
-icc_interaction_sig_gw_dt[Gene_ID == "EIF4EBP1" ]
-icc_interaction_plus_dt[gene == "ENSG00000187840"]
 
 fwrite(icc_interaction_sig_gw_dt, paste0(outdir, "sig_results.tsv.gz"), sep = "\t", compress = "gzip")
 
@@ -603,121 +707,6 @@ ggsave(pPluri_Genes_largest_Cont_eqtl, filename = paste0(outdir, "eQTL_Genes_Var
 
 
 
-eqtls_icc_1pct_grouped_line_dt <- eqtls_icc_1pct_grouped_dt[gene %in% unique(eqtls_icc_1pct_grouped_dt[grp == "Line"]$gene)]
-
-
-table(eqtls_icc_1pct_grouped_line_dt[gene %in% unique(eqtls_icc_1pct_grouped_dt[grp == "Line:Village"]$gene)]$grp)
-
-
-length(unique(eqtls$gene)) ## number that has snp-gene pairs in deboever and our data 4112
-length(unique(eqtls_icc$gene)) ## 2337
-length(unique(eqtls_icc_1pct_grouped_dt$gene)) ### 944
-table(eqtls_icc_1pct_grouped_dt$grp) ## 909 sig in line
-909/944 ### 0.9629237
-
-
-##### do for deboever as well #####
-
-##### check for variance explained for eQTL genes (from Kilpinen et al) that are #####
-deboever_eqtls <- fread("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/eQTL_check/KilpinenOverlap/deboever_imputed_overlapping_filtered_header_pruned_snp_gene.tsv", sep = "\t")
-
-
-deboever_eqtls_icc <- icc_interaction_plus_dt[unique(deboever_eqtls[,"gene_id"]), on = c("gene" = "gene_id")]
-deboever_eqtls_icc$grp <- factor(deboever_eqtls_icc$grp, levels = rev(vars))
-deboever_eqtls_icc <- deboever_eqtls_icc[data.table(gene = deboever_eqtls_icc[grp == "Residual"][order(percent)]$gene), on = "gene"]
-deboever_eqtls_icc$Gene_ID <- factor(deboever_eqtls_icc$Gene_ID, levels = unique(deboever_eqtls_icc$Gene_ID))
- 
-
-group_size_eqtl  <- data.table(table(deboever_eqtls_icc$grp))
-colnames(group_size_eqtl) <- c("grp", "size")
-group_size_eqtl$grp_size <- paste0(group_size_eqtl$grp, "\nN = ", group_size_eqtl$size)
-
-deboever_eqtls_icc <- group_size_eqtl[deboever_eqtls_icc, on = "grp"]
-grp_size_order_eqtl <- c("Line\nN = 2371", "Village\nN = 1836", "Site\nN = 2461", "Replicate\nN = 869", "Line:Village\nN = 367", "Line:Site\nN = 911", "Village:Site\nN = 898","Replicate:Village\nN = 305", "Replicate:Line\nN = 25", "Replicate:Site\nN = 78", "Residual\nN = 2542")
-deboever_eqtls_icc$grp_size <- factor(deboever_eqtls_icc$grp_size, levels = grp_size_order_eqtl)
-
-
-
-deboever_eqtls_icc_1pct <- deboever_eqtls_icc
-
-
-for (ensg in unique(deboever_eqtls_icc$gene)){
-    if (!any(deboever_eqtls_icc[gene == ensg & grp != "Residual"]$percent > 1)){
-        deboever_eqtls_icc_1pct <- deboever_eqtls_icc_1pct[gene != ensg]
-    }
-}
-
-
-
-deboever_eqtls_icc_1pct_grouped_list <- list()
-
-
-for (ensg in unique(deboever_eqtls_icc_1pct$gene)){
-    group <- deboever_eqtls_icc_1pct[gene == ensg & grp != "Residual"][which.max(percent)]$grp
-    deboever_eqtls_icc_1pct_grouped_list[[group]][[ensg]] <- deboever_eqtls_icc_1pct[gene == ensg]
-}
-
-deboever_eqtls_icc_1pct_grouped <- lapply(deboever_eqtls_icc_1pct_grouped_list, function(x) do.call(rbind, x))
-deboever_eqtls_icc_1pct_grouped <- lapply(names(deboever_eqtls_icc_1pct_grouped), function(x){
-    deboever_eqtls_icc_1pct_grouped[[x]]$largest_contributor <- x
-    return(deboever_eqtls_icc_1pct_grouped[[x]])
-})
-
-deboever_eqtls_icc_1pct_grouped_dt <- do.call(rbind, deboever_eqtls_icc_1pct_grouped)
-
-deboever_eqtls_icc_1pct_grouped_dt$largest_contributor <- factor(deboever_eqtls_icc_1pct_grouped_dt$largest_contributor, levels = c("Line", "Village", "Site", "Line:Village", "Line:Site", "Village:Site", "Replicate:Village"))
-
-
-
-pPluri_Genes_largest_Cont_eqtl <- ggplot() +
-						geom_bar(data = deboever_eqtls_icc_1pct_grouped_dt, aes(Gene_ID, percent, fill = factor(grp, levels = rev(vars))), position = "stack", stat = "identity", alpha = 0.75) +
-						theme_classic() +
-						facet_grid(. ~ largest_contributor, scales = "free_x", space = "free_x") +
-						scale_fill_manual(values = var_colors) +
-						ylab("Percent Gene Expression Variance Explained") +
-						theme(axis.title.x=element_blank(),
-                            axis.text.x = element_blank(),
-                            panel.spacing.x=unit(0, "lines"),
-                            axis.ticks.x = element_blank()) +
-                        geom_hline(yintercept = 1, linetype = "dashed") 
-                        # scale_y_discrete(expand = c(0.03, 0))
-                        # scale_x_discrete(expand = c(0.03, 0))
-
-
-ggsave(pPluri_Genes_largest_Cont_eqtl, filename = paste0(outdir, "deboever_eQTL_Genes_Variance_Contributions_1pct_largest_cont.png"), width = 10, height = 4)
-ggsave(pPluri_Genes_largest_Cont_eqtl, filename = paste0(outdir, "deboever_eQTL_Genes_Variance_Contributions_1pct_largest_cont.pdf"), width = 10, height = 4)
-
-
-
-deboever_eqtls_icc_1pct_grouped_line_dt <- deboever_eqtls_icc_1pct_grouped_dt[gene %in% unique(deboever_eqtls_icc_1pct_grouped_dt[grp == "Line"]$gene)]
-
-
-table(deboever_eqtls_icc_1pct_grouped_line_dt[gene %in% unique(deboever_eqtls_icc_1pct_grouped_dt[grp == "Line:Village"]$gene)]$grp)
-
-
-length(unique(deboever_eqtls$gene)) ## number that has snp-gene pairs in deboever and 
-length(unique(deboever_eqtls_icc$gene)) ## 2548
-length(unique(deboever_eqtls_icc_1pct_grouped_dt$gene)) ### 1189
-table(deboever_eqtls_icc_1pct_grouped_dt$grp) ## 1189 sig in line
-length(unique(deboever_eqtls_icc_1pct_grouped_dt$gene))/table(deboever_eqtls_icc_1pct_grouped_dt$grp)["Line"] ### 1
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-### Write interaction genes out for rerunning Line:Village genes to see if significant on their own without interaction ###
-icc_dt_vilXline <- icc_dt[grp == "Village:Line"]
-
-fwrite(icc_dt_vilXline$gene, paste0(outdir, "villageXline.tsv"), sep = "\t")
 
 
 
@@ -833,22 +822,18 @@ kegg_gene_list = unique(sort(dfk$gene_id))
 
 
 
-for (group in c("Line", "Village", "Site",  "Replicate","Village:Line", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Residual")){
+for (group in c("Line", "Village", "Cryopreserved",  "Replicate","Line:Village", "Line:Cryopreserved", "Village:Cryopreserved", "Replicate:Village", "Replicate:Line", "Replicate:Cryopreserved", "Residual")){
     kk[[group]] <- enrichKEGG(gene = geneList[[group]],
                     universe = geneList[[group]],
                     organism     = 'hsa',
-                    pvalueCutoff = 1,
-                    pAdjustMethod = "none",
-                    qvalueCutoff = 1,
+                    pvalueCutoff = 0.05,
                     keyType = 'ncbi-geneid')
 
     gg[[group]] <- groupGO(gene = geneList[[group]],
                 OrgDb = org.Hs.eg.db,
                 readable = TRUE)
-}
 
-lapply(kk, head)
-lapply(gg, head)
+}
 
 
 hsGO <- godata('org.Hs.eg.db', ont="MF")
@@ -856,7 +841,7 @@ hsGO <- godata('org.Hs.eg.db', ont="MF")
 
 sim_results <- list()
 
-vars <- c("Line", "Village", "Site",  "Replicate","Village:Line", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site")
+vars <- c("Line", "Village", "Cryopreserved",  "Replicate","Village:Line", "Line:Cryopreserved", "Village:Cryopreserved", "Replicate:Village", "Replicate:Line", "Replicate:Cryopreserved")
 
 for (group1 in vars){
     print(group1)

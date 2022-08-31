@@ -40,7 +40,7 @@ save_figs <- function(plot, basename, width = 17, height = 17, units = "cm"){
 ##### Set up colors #####
 variable_colors <- c(Village = "#A2B0D0", Replicate = "#64A66B", Line = "#68319B") 
 line_colors <- c(FSA0006 = "#F79E29", MBE1006 = "#9B2C99", TOB0421 = "#35369C")
-village_colors <- c(Baseline = "#b9cee4", Village = "#8a92bb" )
+village_colors <- c("Uni-Culture" = "#613246", "Village" = "#A286AA")
 
 site_updates <- c("Brisbane" = "Site 1" ,"Melbourne" = "Site 2", "Sydney" = "Site 3")
 
@@ -57,7 +57,7 @@ names(seurat_list) <- gsub("_seurat.rds", "", files)
 
 seurat_list <- lapply(seurat_list, function(x){
 	x$Location <- ifelse(x$Time %in% c("Thawed Village Day 0", "Thawed Village Day 7"), "Sydney_Cryopreserved", x$Location)
-	x$Time <- ifelse(x$Time %in% c("Village Day 4", "Thawed Village Day 7"), "Village", "Baseline")
+	x$Time <- ifelse(x$Time %in% c("Village Day 4", "Thawed Village Day 7"), "Village", "Uni-Culture")
 	for (location in names(site_updates)){
 		x$Location <- gsub(location, site_updates[location], x$Location)
 	}
@@ -455,29 +455,73 @@ for (gene in pluri_genes$Gene){
 	df_list[[gene]] <- expression_df(seurat_list, pluri_genes[which(pluri_genes$Gene == gene),"ENSG"], c("Location", "Time", "Final_Assignment"))
 	df_list[[gene]]$Gene <- gene
 }
-df <- do.call(rbind, df_list)
+df <- data.table(do.call(rbind, df_list))
 
 dir.create(paste0(outdir,"pluri_genes/"))
 
 
-p_counts <- ggplot(df[which(df$Location != "Site 3_Cryopreserved"),], aes(x = Final_Assignment, y = Counts, color = Time)) +
-					geom_boxplot(outlier.size = 0.5) +
+
+
+##### Read in significance #####
+pluri_deg <- readRDS("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/Expression_Boxplots/pluri_degs/LR_DEGs_4pluri_genes.rds")
+
+
+pluri_deg <- lapply(names(pluri_deg), function(x){
+	strings <- unlist(str_split(x, "_"))
+	pluri_deg[[x]]$Location <- gsub("Brisbane", "Site 1", strings[1]) %>% gsub("Melbourne", "Site 2", .) %>% gsub("Sydney", "Site 3", .)
+	pluri_deg[[x]]$Cryopreservation <- strings[2]
+	pluri_deg[[x]]$Final_Assignment <- strings[3]
+	return(pluri_deg[[x]])
+})
+
+pluri_deg_dt <- do.call(rbind,pluri_deg)
+colnames(pluri_deg_dt) <- gsub("GeneID", "Gene", colnames(pluri_deg_dt))
+pluri_deg_dt$Symbol <- "*"
+pluri_deg_dt$counts_position <- ifelse(pluri_deg_dt$Gene == "MYC", 26,
+									ifelse(pluri_deg_dt$Gene == "NANOG", 22, 
+										ifelse(pluri_deg_dt$Gene == "POU5F1", 115, 60)))
+
+df$Cryopreservation <- ifelse(df$Location != "3_Cryopreserved", "Fresh", "Cryopreserved")
+df$Location <- gsub("_Cryopreserved", "", df$Location)
+
+
+p_counts <- ggplot(df[Cryopreservation != "Cryopreserved"], aes(x = Final_Assignment, y = Counts, color = Time)) +
+					geom_boxplot(aes(fill = Time), outlier.size = 0.5) +
 					theme_classic() +
-					facet_grid(Gene ~ Location, scales = "free_y") +
 					scale_color_manual(values = village_colors) +
+					scale_fill_manual(values = alpha(village_colors, 0.3)) +
 					theme(legend.position = "none",
-						axis.title.x = element_blank())
-save_figs(p_counts, paste0(outdir,"pluri_genes/pluri_counts"), width = 16, height = 14)
+						axis.title.x = element_blank()) +
+					geom_text(
+						data = pluri_deg_dt[Cryopreservation != "Cryopreserved"],
+						aes(x = Final_Assignment, y = counts_position,label = Symbol), 
+						color = "black",
+						size = 4) +
+					facet_grid(Gene ~ Location, scales = "free_y") +
+					theme(axis.text.x = element_text(angle = 45, hjust = 1))
+					
+save_figs(p_counts, paste0(outdir,"pluri_genes/pluri_counts"), width = 16, height = 16)
 
 
-p_scaled <- ggplot(df[which(df$Location != "Site 3_Cryopreserved"),], aes(x = Final_Assignment, y = Normalized, color = Time)) +
-					geom_boxplot(outlier.size = 0.5) +
+
+pluri_deg_dt$counts_position <- ifelse(pluri_deg_dt$Gene == "MYC", 15.5,
+									ifelse(pluri_deg_dt$Gene == "NANOG", 10, 
+										ifelse(pluri_deg_dt$Gene == "POU5F1", 9, 12)))
+
+p_scaled <- ggplot(df[Location != "Cryopreserved"], aes(x = Final_Assignment, y = Normalized, color = Time)) +
+					geom_boxplot(aes(fill = Time),outlier.size = 0.15, lwd=0.3) +
 					theme_classic() +
 					facet_grid(Gene ~ Location, scales = "free_y") +
 					scale_color_manual(values = village_colors) +
+					scale_fill_manual(values = alpha(village_colors, 0.4)) +
 					theme(axis.title.x = element_blank()) +
 					ylab("Normalized Expression") +
-					theme(axis.text.x = element_text(angle = 45, hjust = 1))
+					theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+					geom_text(
+						data = pluri_deg_dt[Cryopreservation != "Cryopreserved"],
+						aes(x = Final_Assignment, y = counts_position,label = Symbol), 
+						color = "black",
+						size = 3) 
 save_figs(p_scaled, paste0(outdir,"pluri_genes/pluri_normalized"), width = 15, height = 10)
 
 

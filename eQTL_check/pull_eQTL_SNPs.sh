@@ -71,8 +71,21 @@ conda activate bedtools
 
 conda deactivate
 
+
+
+head -n 1 $OUT/kilpinen.bed > $INTERSECT_OUT/kilpinen_header_bed.tsv
+grep "#CHROM" $INTERSECT_OUT/merged_imputed_AllChrs_iPSC_R2_0.3_filtered_diff_genotypes.vcf > $INTERSECT_OUT/kilpinen_header_vcf.tsv
+paste -d"\t" $INTERSECT_OUT/kilpinen_header_bed.tsv $INTERSECT_OUT/kilpinen_header_vcf.tsv > $INTERSECT_OUT/kilpinen_combined_header.tsv
+
+cat $INTERSECT_OUT/kilpinen_combined_header.tsv > $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered_header.bed
+cat $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered.bed >> $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered_header.bed
+
+
+
+
+
 ### Use this file to test for trends in gene
-awk 'BEGIN{FS=OFS="\t"}{print($24, $7)}' $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered.bed | sed 's/\..*//g' > $INTERSECT_OUT/gene_snp_list.tsv
+awk 'BEGIN{FS=OFS="\t"}{print($24, $7)}' $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered_header.bed | sed 's/\..*//g' > $INTERSECT_OUT/gene_snp_list.tsv
 
 sed -i '1i snp\tgene' $INTERSECT_OUT/gene_snp_list.tsv
 

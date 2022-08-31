@@ -1,10 +1,11 @@
 library(data.table)
 library(Seurat)
 library(ggplot2)
-library(Nebulosa)
-library(schex)
-library(R.utils)
-library(Hmisc)
+library(tidyverse)
+# library(Nebulosa)
+# library(schex)
+# library(R.utils)
+# library(Hmisc)
 
 
 ##### Setting up Directories
@@ -16,6 +17,7 @@ dir.create(outdir, recursive = TRUE)
 
 
 line_colors = c(FSA0006 = "#F79E29", MBE1006 = "#9B2C99", TOB0421 = "#35369C")
+village_colors <- c("Uni-Culture" = "#613246", "Village" = "#A286AA")
 
 
 ##### Read in data #####
@@ -397,15 +399,29 @@ summary(lm(POU5F1 ~ equal_groups, data = latent_split))
 
 
 ##### Make histograms of each location, colored by time, faceted by location #####
-seurat_noNA@meta.data$Time <- gsub("Village Day 4","Village", seurat_noNA@meta.data$Time) %>% gsub("Thawed Village Day 7", "Village", .) %>% gsub("Thawed Village Day 0","Baseline", .)
-
 seurat_noNA@meta.data$Location <- ifelse(grepl("Thawed", seurat_noNA@meta.data$Location), "Sydney-Cryopreserved", gsub("_.+", "", seurat_noNA@meta.data$Location))
+seurat_noNA@meta.data$Location <- gsub("Brisbane", "Site 1", seurat_noNA@meta.data$Location) %>% gsub("Melbourne", "Site 2", .) %>% gsub("Sydney", "Site 3", .)
+seurat_noNA@meta.data$Village <- gsub("Baseline", "Uni-Culture", seurat_noNA@meta.data$Time) %>% gsub("Village Day 4", "Village", .) %>% gsub("Thawed Village Day 0", "Uni-Culture", .) %>% gsub("Thawed Village Day 7", "Village", .)
+
 
 seurat_noNA@meta.data$Location_Individual <- paste0(seurat_noNA@meta.data$Location, "-", seurat_noNA@meta.data$Final_Assignment)
 
-pLocation_Time_latent <- ggplot(seurat_noNA@meta.data, aes(latent_time, color = Time)) +
-	geom_density() +
+
+pLocation_Time_latent <- ggplot(seurat_noNA@meta.data, aes(latent_time, fill = Village)) +
+	geom_density(alpha = 0.75) +
 	theme_classic() +
-	facet_grid(Location ~ Final_Assignment)
+	facet_grid(Location ~ Final_Assignment) +
+	scale_fill_manual(values = village_colors)
 ggsave(pLocation_Time_latent, filename = paste0(outdir,"faceted_histogram_latent.png"))
+ggsave(pLocation_Time_latent, filename = paste0(outdir,"faceted_histogram_latent.pdf"))
+
+
+
+pLocation_Time_latent_line <- ggplot(seurat_noNA@meta.data, aes(latent_time, fill = Village)) +
+	geom_density(alpha = 0.75) +
+	theme_classic() +
+	facet_grid(vars(Final_Assignment)) +
+	scale_fill_manual(values = village_colors)
+ggsave(pLocation_Time_latent_line, filename = paste0(outdir,"faceted_histogram_latent_line.png"), width = 4, height = 3)
+ggsave(pLocation_Time_latent_line, filename = paste0(outdir,"faceted_histogram_latent_line.pdf"), width = 4, height = 3)
 

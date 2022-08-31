@@ -38,14 +38,15 @@ save_figs <- function(plot, basename, width = 17, height = 17, units = "cm"){
 seurat <- readRDS(paste0(datadir,"seurat_integrated_all_times_clustered.rds"))
 seurat@meta.data$Location <- gsub("_.+", "", seurat@meta.data$Location_Time)
 seurat@meta.data$phases <- factor(seurat@meta.data$phases, levels = c("G1", "S", "G2M"))
-
+seurat@meta.data$Village <- gsub("Baseline", "Uni-Culture", seurat@meta.data$Time) %>% gsub("Village Day 4", "Village", .) %>% gsub("Thawed Village Day 0", "Uni-Culture", .) %>% gsub("Thawed Village Day 7", "Village", .)
 
 ##### Set up Colors #####
 cell_line_colors <- c("FSA0006" = "#F79E29", "MBE1006" = "#9B2C99", "TOB0421"= "#35369C")
 replicate_colors <- c("1" = "#ACD39E", "2" = "#5AAE61", "3" = "#1B7837")
 time_colors <- c("Baseline" = "#b9cee4", "Village Day 4" = "#8a92bb", "Thawed Village Day 0" = "#7d57a0", "Thawed Village Day 7" = "#853786")
+village_colors <- c("Uni-Culture" = "#613246", "Village" = "#A286AA")
 cycle_colors <- c("G1" = "#4393C3", "S" = "#92C5DE", "G2M" = "#D1E5F0")
-site_colors <- c("Brisbane" = "#5D59AB", "Sydney" = "#A7C9A9", "Melbourne" = "#179085")
+site_colors <- c("Brisbane" = "#536CB4", "Sydney" = "#62BD67", "Melbourne" = "#D24F72")
 cluster_colors <- c("0" = "#C9D8EA", "1" = "#928CC5", "2" = "#A7C9A9", "3" = "#179085", "4" = "#F79F9F", "5" = "#C35B76", "6" = "#F4C893", "7" = "#F6AA4B")
 
 
@@ -53,6 +54,10 @@ cluster_colors <- c("0" = "#C9D8EA", "1" = "#928CC5", "2" = "#A7C9A9", "3" = "#1
 ## With Clusters ##
 UMAP_cell_line <- DimPlot(seurat, reduction = "umap", group.by = c("integrated_snn_res.0.28"), cols = cluster_colors) + labs(color="Cluster") + ggtitle(NULL) 
 save_figs(UMAP_cell_line, basename = paste0(outdir,"Cluster_umap"),width = 15, height = 15)
+
+## With Village ##
+UMAP_village <- DimPlot(seurat, reduction = "umap", group.by = c("Village"), cols = village_colors) + labs(color="Village") + ggtitle(NULL) 
+save_figs(UMAP_village, basename = paste0(outdir,"Village_umap"),width = 15, height = 15)
 
 ## By Cell Line ##
 UMAP_cell_line <- DimPlot(seurat, reduction = "umap", group.by = c("Final_Assignment"), cols = cell_line_colors) + labs(color="Cell Line") + ggtitle(NULL) 

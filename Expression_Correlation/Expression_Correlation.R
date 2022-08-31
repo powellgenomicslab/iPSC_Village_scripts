@@ -227,8 +227,266 @@ summary_SCT_list <- lapply(names(SCT_combined_list_list), function(x){
 
 
 
-summary_SCT <- do.call(rbind, summary_SCT_list)
+summary_SCT <- data.table(do.call(rbind, summary_SCT_list))
 summary_SCT$Replicate <- gsub("Brisbane", "Replicate", summary_SCT$Replicate) %>% gsub("Melbourne", "Replicate", .) %>% gsub("Sydney", "Replicate", .)
+
+
+
+##### Get unique id for each  #####
+summary_SCT$ID <- paste(summary_SCT$Location, summary_SCT$Time, summary_SCT$Line, summary_SCT$Replicate, sep = "-")
+
+
+correlations <- lapply(unique(summary_SCT$ID), function(group1){
+	print(group1)
+	tmp <- lapply(unique(summary_SCT$ID), function(group2){
+		print(group2)
+		genes <- summary_SCT[ID == group1][summary_SCT[ID == group1]$Gene %in% summary_SCT[ID == group2]$Gene]$Gene
+		print(all(summary_SCT[ID == group1][Gene %in% genes]$Gene == summary_SCT[ID == group2][Gene %in% genes]$Gene))
+		return(data.table(Group1 = group1, Group2 = group2, Spearman = cor(summary_SCT[ID == group1][Gene %in% genes]$Mean, summary_SCT[ID == group2][Gene %in% genes]$Mean, method = "spearman")))
+	})
+	return(do.call(rbind, tmp))
+})
+
+saveRDS(correlations, paste0(outdir, "correlations.rds"))
+
+
+correlations_pearson <- lapply(unique(summary_SCT$ID), function(group1){
+	print(group1)
+	tmp <- lapply(unique(summary_SCT$ID), function(group2){
+		print(group2)
+		genes <- summary_SCT[ID == group1][summary_SCT[ID == group1]$Gene %in% summary_SCT[ID == group2]$Gene]$Gene
+		print(all(summary_SCT[ID == group1][Gene %in% genes]$Gene == summary_SCT[ID == group2][Gene %in% genes]$Gene))
+		return(data.table(Group1 = group1, Group2 = group2, Pearson = cor(summary_SCT[ID == group1][Gene %in% genes]$Mean, summary_SCT[ID == group2][Gene %in% genes]$Mean)))
+	})
+	return(do.call(rbind, tmp))
+})
+
+correlations_pearson_dt <- do.call(rbind, correlations_pearson)
+
+tmp <- summary_SCT[ID == "Brisbane-Baseline-FSA0006-Replicate1"][summary_SCT[ID == "Brisbane-Baseline-TOB0421-Replicate1"], on = "Gene"]
+
+scatter_test <- ggplot(tmp, aes(Mean,i.Mean)) +
+	geom_point() +
+	theme_classic()
+
+ggsave(scatter_test, filename = paste0(outdir, "test_correlation.png"))
+
+
+correlations_dt <- do.call(rbind, correlations)
+correlations_dt[, c("Location1", "Village1", "Line1", "Replicate1") := tstrsplit(Group1, "-", fixed=TRUE)]
+correlations_dt[, c("Location2", "Village2", "Line2", "Replicate2") := tstrsplit(Group2, "-", fixed=TRUE)]
+
+
+
+##### Try with data slot instead #####
+summary_SCT_data_list <- lapply(names(SCT_combined_list_list), function(x){
+	temp3 <- lapply(names(SCT_combined_list_list[[x]]), function(y){
+		temp2 <- lapply(names(SCT_combined_list_list[[x]][[y]]), function(z){
+			temp <- lapply(names(SCT_combined_list_list[[x]][[y]][[z]]), function(rep){
+				data.frame(Gene = rownames(SCT_combined_list_list[[x]][[y]][[z]][[rep]]), Mean = rowMeans(SCT_combined_list_list[[x]][[y]][[z]][[rep]][["SCT"]]@data), N = ncol(SCT_combined_list_list[[x]][[y]][[z]][[rep]][["SCT"]]@data), Replicate = rep, Line = z, Location = y, Time = x)
+			})
+			do.call(rbind, temp)
+		})
+		do.call(rbind, temp2)
+	})
+	do.call(rbind, temp3)
+})
+
+
+
+summary_SCT_data <- data.table(do.call(rbind, summary_SCT_data_list))
+summary_SCT_data$Replicate <- gsub("Brisbane", "Replicate", summary_SCT_data$Replicate) %>% gsub("Melbourne", "Replicate", .) %>% gsub("Sydney", "Replicate", .)
+
+
+
+##### Get unique id for each  #####
+summary_SCT_data$ID <- paste(summary_SCT_data$Location, summary_SCT_data$Time, summary_SCT_data$Line, summary_SCT_data$Replicate, sep = "-")
+
+
+correlations_data <- lapply(unique(summary_SCT_data$ID), function(group1){
+	print(group1)
+	tmp <- lapply(unique(summary_SCT_data$ID)[(which(unique(summary_SCT_data$ID) == group1) + 1):length(unique(summary_SCT_data$ID))], function(group2){
+		print(group2)
+		genes <- summary_SCT_data[ID == group1][summary_SCT_data[ID == group1]$Gene %in% summary_SCT_data[ID == group2]$Gene]$Gene
+		print(all(summary_SCT_data[ID == group1][Gene %in% genes]$Gene == summary_SCT_data[ID == group2][Gene %in% genes]$Gene))
+		return(data.table(Group1 = group1, Group2 = group2, Spearman = cor(summary_SCT_data[ID == group1][Gene %in% genes]$Mean, summary_SCT_data[ID == group2][Gene %in% genes]$Mean, method = "spearman")))
+	})
+	return(do.call(rbind, tmp))
+})
+
+
+
+correlations_data_dt <- do.call(rbind, correlations_data)
+correlations_data_dt[, c("Location1", "Village1", "Line1", "Replicate1") := tstrsplit(Group1, "-", fixed=TRUE)]
+correlations_data_dt[, c("Location2", "Village2", "Line2", "Replicate2") := tstrsplit(Group2, "-", fixed=TRUE)]
+
+correlations_data_fresh_dt <- correlations_data_dt[Location1 != "Sydney_Cryopreserved" | Location2 != "Sydney_Cryopreserved"]
+
+
+#####  #####
+correlations_data_fresh_village_dt <- correlations_data_fresh_dt[Replicate1 == Replicate2 & Line1 == Line2 & Location1 == Location2 & Village1 != Village2 & Group1 != Group2]
+correlations_data_fresh_village_dt$Group <- "Village"
+
+correlations_data_fresh_replicate_dt <- correlations_data_fresh_dt[Village1 == Village2 & Line1 == Line2 & Location1 == Location2 & Replicate1 != Replicate2 & Group1 != Group2]
+correlations_data_fresh_replicate_dt$Group <- "Replicate"
+
+correlations_data_fresh_location_dt <- correlations_data_fresh_dt[Replicate1 == Replicate2 & Line1 == Line2 & Village1 == Village2 & Location1 != Location2 & Group1 != Group2]
+correlations_data_fresh_location_dt$Group <- "Location"
+
+correlations_data_fresh_line_dt <- correlations_data_fresh_dt[Village1 == Village2 & Location1 == Location2 & Line1 != Line2 & Group1 != Group2]
+correlations_data_fresh_line_dt$Group <- "Line"
+
+correlations_data_fresh_combined_dt <- rbind(correlations_data_fresh_village_dt, correlations_data_fresh_replicate_dt, correlations_data_fresh_location_dt, correlations_data_fresh_line_dt)
+
+correlations_data_fresh_combined_dt$Group <- factor(correlations_data_fresh_combined_dt$Group, levels = c("Replicate", "Village", "Line", "Location"))
+
+
+res <- list()
+
+for (group1 in unique(correlations_data_fresh_combined_dt$Group)){
+	for (group2 in unique(correlations_data_fresh_combined_dt$Group)[(which(unique(correlations_data_fresh_combined_dt$Group) == group1)+1):length(unique(correlations_data_fresh_combined_dt$Group))]){
+		res[[group1]][[group2]] <- wilcox.test(correlations_data_fresh_combined_dt[Group == group1]$Spearman, correlations_data_fresh_combined_dt[Group == group2]$Spearman,exact = FALSE)
+	}
+}
+
+
+
+
+correlations_data_fresh_combined_dt_med <- correlations_data_fresh_combined_dt %>% 
+  group_by(Group) %>%
+  mutate(median = median(as.numeric(Spearman)))
+
+
+correlation_fresh_dist <- ggplot(correlations_data_fresh_combined_dt, aes(Spearman)) +
+	geom_histogram(bins = 50) +
+	facet_wrap(vars(factor(Group, levels = c("Replicate", "Village", "Line", "Location"))), ncol = 1, scales = "free_y") +
+	theme_classic() +
+	geom_vline(data = correlations_data_fresh_combined_dt_med, aes(xintercept = median), linetype = "dashed")
+
+ggsave(correlation_fresh_dist, filename = paste0(outdir, "correlation_distributions_fresh.png"), width = 3)
+ggsave(correlation_fresh_dist, filename = paste0(outdir, "correlation_distributions_fresh.pdf"), width = 3)
+
+
+##### For cryopreserdd #####
+
+correlations_data_combined_cryo_dt <- correlations_data_dt[grepl("Sydney", Location1) & grepl("Sydney", Location2)]
+correlations_data_combined_cryo_dt$Cryopreserved1 <- gsub("Sydney_", "",correlations_data_combined_cryo_dt$Location1)
+correlations_data_combined_cryo_dt$Cryopreserved2 <- gsub("Sydney_", "",correlations_data_combined_cryo_dt$Location2)
+
+
+#####  #####
+correlations_data_cryo_village_dt <- correlations_data_combined_cryo_dt[Replicate1 == Replicate2 & Line1 == Line2 & Cryopreserved1 == Cryopreserved2  & Village1 != Village2 & Group1 != Group2]
+correlations_data_cryo_village_dt$Group <- "Village"
+
+correlations_data_cryo_replicate_dt <- correlations_data_combined_cryo_dt[Village1 == Village2 & Line1 == Line2 & Cryopreserved1 == Cryopreserved2 & Replicate1 != Replicate2 & Group1 != Group2]
+correlations_data_cryo_replicate_dt$Group <- "Replicate"
+
+correlations_data_cryo_cryo_dt <- correlations_data_combined_cryo_dt[Replicate1 == Replicate2 & Line1 == Line2 & Village1 == Village2 & Cryopreserved1 != Cryopreserved2 & Group1 != Group2]
+correlations_data_cryo_cryo_dt$Group <- "Cryopreserved"
+
+correlations_data_cryo_line_dt <- correlations_data_combined_cryo_dt[Village1 == Village2 & Cryopreserved1 == Cryopreserved2  & Line1 != Line2 & Group1 != Group2]
+correlations_data_cryo_line_dt$Group <- "Line"
+
+correlations_data_cryo_combined_dt <- rbind(correlations_data_cryo_village_dt, correlations_data_cryo_replicate_dt, correlations_data_cryo_cryo_dt, correlations_data_cryo_line_dt)
+
+correlations_data_cryo_combined_dt$Group <- factor(correlations_data_cryo_combined_dt$Group, levels = c("Replicate", "Cryopreserved", "Village", "Line"))
+
+correlations_data_cryo_combined_dt_med <- correlations_data_cryo_combined_dt %>% 
+  group_by(Group) %>%
+  mutate(median = median(as.numeric(Spearman)))
+
+
+
+correlation_cryo_dist <- ggplot(correlations_data_cryo_combined_dt, aes(Spearman)) +
+	geom_histogram(bins = 50) +
+	facet_wrap(vars(factor(Group, levels = c("Replicate", "Cryopreserved", "Village", "Line"))), ncol = 1, scales = "free_y") +
+	theme_classic() +
+	geom_vline(data = correlations_data_cryo_combined_dt_med, aes(xintercept = median), linetype = "dashed")
+
+ggsave(correlation_cryo_dist, filename = paste0(outdir, "correlation_distributions_cryo.png"), width = 3)
+ggsave(correlation_cryo_dist, filename = paste0(outdir, "correlation_distributions_cryo.pdf"), width = 3)
+
+
+
+
+
+##### Try with counts slot instead #####
+summary_SCT_counts_list <- lapply(names(SCT_combined_list_list), function(x){
+	temp3 <- lapply(names(SCT_combined_list_list[[x]]), function(y){
+		temp2 <- lapply(names(SCT_combined_list_list[[x]][[y]]), function(z){
+			temp <- lapply(names(SCT_combined_list_list[[x]][[y]][[z]]), function(rep){
+				data.frame(Gene = rownames(SCT_combined_list_list[[x]][[y]][[z]][[rep]]), Mean = rowMeans(SCT_combined_list_list[[x]][[y]][[z]][[rep]][["SCT"]]@counts), N = ncol(SCT_combined_list_list[[x]][[y]][[z]][[rep]][["SCT"]]@counts), Replicate = rep, Line = z, Location = y, Time = x)
+			})
+			do.call(rbind, temp)
+		})
+		do.call(rbind, temp2)
+	})
+	do.call(rbind, temp3)
+})
+
+
+
+summary_SCT_counts <- data.table(do.call(rbind, summary_SCT_counts_list))
+summary_SCT_counts$Replicate <- gsub("Brisbane", "Replicate", summary_SCT_counts$Replicate) %>% gsub("Melbourne", "Replicate", .) %>% gsub("Sydney", "Replicate", .)
+
+
+
+##### Get unique id for each  #####
+summary_SCT_counts$ID <- paste(summary_SCT_counts$Location, summary_SCT_counts$Time, summary_SCT_counts$Line, summary_SCT_counts$Replicate, sep = "-")
+
+
+correlations_counts <- lapply(unique(summary_SCT_counts$ID), function(group1){
+	print(group1)
+	tmp <- lapply(unique(summary_SCT_counts$ID)[(which(unique(summary_SCT_counts$ID) == group1) + 1):length(unique(summary_SCT_counts$ID))], function(group2){
+		print(group2)
+		genes <- summary_SCT_counts[ID == group1][summary_SCT_counts[ID == group1]$Gene %in% summary_SCT_counts[ID == group2]$Gene]$Gene
+		print(all(summary_SCT_counts[ID == group1][Gene %in% genes]$Gene == summary_SCT_counts[ID == group2][Gene %in% genes]$Gene))
+		return(data.table(Group1 = group1, Group2 = group2, Spearman = cor(summary_SCT_counts[ID == group1][Gene %in% genes]$Mean, summary_SCT_counts[ID == group2][Gene %in% genes]$Mean, method = "spearman")))
+	})
+	return(do.call(rbind, tmp))
+})
+
+
+
+correlations_counts_dt <- do.call(rbind, correlations_counts)
+correlations_counts_dt[, c("Location1", "Village1", "Line1", "Replicate1") := tstrsplit(Group1, "-", fixed=TRUE)]
+correlations_counts_dt[, c("Location2", "Village2", "Line2", "Replicate2") := tstrsplit(Group2, "-", fixed=TRUE)]
+
+correlations_counts_village_dt <- correlations_counts_dt[Replicate1 == Replicate2 & Line1 == Line2 & Location1 == Location2 & Village1 != Village2 & Group1 != Group2]
+correlations_counts_village_dt$Group <- "Village"
+
+correlations_counts_replicate_dt <- correlations_counts_dt[Village1 == Village2 & Line1 == Line2 & Location1 == Location2 & Replicate1 != Replicate2 & Group1 != Group2]
+correlations_counts_replicate_dt$Group <- "Replicate"
+
+correlations_counts_location_dt <- correlations_counts_dt[Replicate1 == Replicate2 & Line1 == Line2 & Village1 == Village2 & Location1 != Location2 & Group1 != Group2]
+correlations_counts_location_dt$Group <- "Location"
+
+correlations_counts_line_dt <- correlations_counts_dt[Replicate1 == Replicate2 & Village1 == Village2 & Location1 == Location2 & Line1 != Line2 & Group1 != Group2]
+correlations_counts_line_dt$Group <- "Line"
+
+correlations_counts_combined_dt <- rbind(correlations_counts_village_dt, correlations_counts_replicate_dt, correlations_counts_location_dt, correlations_counts_line_dt)
+
+correlations_counts_combined_dt_med <- correlations_counts_combined_dt %>% 
+  group_by(Group) %>%
+  mutate(median = median(as.numeric(Spearman)))
+
+
+correlations_counts_combined_dt$Group <- factor(correlations_counts_combined_dt$Group, levels = c("Replicate", "Village", "Line", "Location"))
+
+
+correlation_dist <- ggplot(correlations_counts_combined_dt, aes(Spearman)) +
+	geom_histogram(bins = 50) +
+	facet_wrap(vars(factor(Group, levels = c("Replicate", "Village", "Line", "Location"))), ncol = 1, scales = "free_y") +
+	theme_classic() +
+	geom_vline(data = correlations_counts_combined_dt_med, aes(xintercept = median), linetype = "dashed")
+
+ggsave(correlation_dist, filename = paste0(outdir, "correlation_distributions_counts.png"), width = 3)
+
+
+
+
+
+
 summary_SCT_wide <- pivot_wider(summary_SCT, names_from = Replicate, values_from = c(Mean, N))
 summary_SCT_wide$SD <- rowSds(as.matrix(summary_SCT_wide[,c("Mean_Replicate1", "Mean_Replicate2", "Mean_Replicate3")]))
 summary_SCT_wide$Mean <- (summary_SCT_wide$Mean_Replicate1 * summary_SCT_wide$N_Replicate1 + summary_SCT_wide$Mean_Replicate2 * summary_SCT_wide$N_Replicate2 + summary_SCT_wide$Mean_Replicate3 * summary_SCT_wide$N_Replicate3)/(summary_SCT_wide$N_Replicate1 + summary_SCT_wide$N_Replicate2 + summary_SCT_wide$N_Replicate3)

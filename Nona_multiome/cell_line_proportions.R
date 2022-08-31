@@ -32,7 +32,7 @@ village_id_list <- lapply(villages, function(x){
     # tmp <- fread(paste0(datadir,x,"/CombinedResults/Final_Assignments_demultiplexing_doublets_new_edit.txt"), sep = "\t")
     tmp <- readRDS(paste0(non_dir,x))
     dt <- data.table(tmp@meta.data)
-    dt$Pool_ID <- gsub("_DemuxALL.rds", "",x))
+    dt$Pool_ID <- gsub("_DemuxALL.rds", "",x)
     dt$Day <- as.numeric(as.character(gsub("Village_Day", "", dt$Pool_ID)))
     return(dt)
 })
@@ -66,6 +66,11 @@ village_summary_singlets <- data.table(prop.table(table(village_id[Assignment !=
 
 village_summary_singlets$Assignment <- factor(village_summary_singlets$Assignment, levels = rev(village_summary_singlets[Day_updated == 15]$Assignment[order(village_summary_singlets[Day_updated == 15]$N)]))
 
+colors <- c("#f44336", "#e81f63", "#9c27b0", "#673ab7", "#3f51b5", "#2096f3","#2096f3", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc108", "#ff9801", "#ff5723" ,"#795548", "#9e9e9e", "#607d8b")
+names(colors) <- levels(village_summary_singlets$Assignment)
+
+saveRDS(colors, paste0(outdir,"line_colors"))
+
 
 ##### Make proportion plots (area plot) #####
 p_stacked_area <- ggplot(village_summary_singlets, aes(x = as.numeric(as.character(Day_updated)), y = N, fill = factor(Assignment), group = Assignment)) +
@@ -76,6 +81,7 @@ p_stacked_area <- ggplot(village_summary_singlets, aes(x = as.numeric(as.charact
     ylab("Proportion of Cells")
 ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.png"), width = 7, height = 4)
 ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.pdf"), width = 7, height = 4)
+
 
 
 

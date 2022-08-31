@@ -5,6 +5,7 @@ library(gamlss)
 library(fitdistrplus)
 library(VGAM)
 library(emdbook)
+library(data.table)
 
 
 save_figs <- function(plot, basename, width = 17, height = 17, units = "cm"){
@@ -214,6 +215,12 @@ seurat <- readRDS(paste0(datadir,"seurat_integrated_all_times_clustered.rds"))
 ## Keep only genes expressed in at least 1% of cells 
 seurat_sub <- subset(seurat, features = rownames(seurat)[which(rowSums(seurat[["SCT"]]@counts > 0)/ncol(seurat[["SCT"]]@counts) >= 0.01)])
 saveRDS(seurat_sub, paste0(outdir,"seurat_integrated_all_times_clustered_1pct_expressing.rds"))
+seurat_sub <- readRDS(paste0(outdir,"seurat_integrated_all_times_clustered_1pct_expressing.rds"))
+
+
+### Make a list of the genes to be used by snakemake in variance_partition_post_reviedw.smk ###
+genes_dt <- data.table(Gene = rownames(seurat_sub))
+fwrite(genes_dt, paste0(outdir,"seurat_integrated_all_times_clustered_1pct_expressing_genelist.tsv"), sep = "\t")
 
 
 aic_df <- as.data.frame(matrix(nrow = 0, ncol = 3))
