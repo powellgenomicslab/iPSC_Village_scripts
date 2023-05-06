@@ -278,3 +278,5 @@ scv.pl.velocity_embedding_stream(adata_concat, basis='umap', color=['latent_time
 
 scv.tl.differential_kinetic_test(adata_concat)
 scv.tl.rank_dynamical_genes(adata_concat)
+
+

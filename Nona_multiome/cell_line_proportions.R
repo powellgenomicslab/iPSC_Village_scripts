@@ -71,17 +71,40 @@ names(colors) <- levels(village_summary_singlets$Assignment)
 
 saveRDS(colors, paste0(outdir,"line_colors"))
 
+fwrite(village_summary_singlets, paste0(outdir, "line_proportions_per_day.tsv"), sep = "\t")
+
 
 ##### Make proportion plots (area plot) #####
 p_stacked_area <- ggplot(village_summary_singlets, aes(x = as.numeric(as.character(Day_updated)), y = N, fill = factor(Assignment), group = Assignment)) +
-    geom_area(alpha=0.6 , size=0.5, colour="black") +
+    geom_area(alpha=0.6 , size=0.1, colour="black") +
     theme_classic() +
     scale_fill_manual(values = c("#f44336", "#e81f63", "#9c27b0", "#673ab7", "#3f51b5", "#2096f3","#2096f3", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc108", "#ff9801", "#ff5723" ,"#795548", "#9e9e9e", "#607d8b")) +
     xlab("Days") +
     ylab("Proportion of Cells")
-ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.png"), width = 7, height = 4)
-ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.pdf"), width = 7, height = 4)
+ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.png"), width = 4, height = 2)
+ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.pdf"), width = 4, height = 2)
 
+
+##### Make Number at each time plot #####
+village_summary_singlets_n <- data.table(Day_updated = unique(village_summary_singlets$Day_updated), N = as.numeric(NA))
+
+for (day in village_summary_singlets_n$Day_updated){
+    village_summary_singlets_n[Day_updated == day]$N <- nrow(village_summary_singlets[Day_updated == day & N > 0])
+}
+
+
+p_N_line <- ggplot(village_summary_singlets_n, aes(x = as.numeric(as.character(Day_updated)), y = N)) +
+    geom_point(colour="black", size = 0.8) +
+    geom_line() +
+    # geom_smooth(method = "lm", se = FALSE) +
+    theme_classic() +
+    xlab("Days") +
+    ylab("# hiPSC\nLines") +
+    ylim(0,18)
+
+
+ggsave(p_N_line, filename = paste0(outdir,"line_N_nona.png"), width = 2.68, height = 1.5)
+ggsave(p_N_line, filename = paste0(outdir,"line_N_nona.pdf"), width = 2.68, height = 1.5)
 
 
 

@@ -25,7 +25,7 @@ snakemake \
 nohup \
   snakemake \
     --snakefile $SNAKEFILE \
-    --jobs 100 \
+    --jobs 250 \
     --use-singularity \
     --restart-times 1 \
     --keep-going \

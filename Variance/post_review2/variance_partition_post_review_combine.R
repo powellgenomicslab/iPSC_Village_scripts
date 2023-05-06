@@ -26,6 +26,7 @@ dir.create(outdir, recursive = TRUE)
 
 
 vars <- c("Line", "Village", "Cryopreserved", "Site",  "Replicate","Line:Village", "Line:Cryopreserved", "Line:Site", "Village:Cryopreserved","Village:Site",  "Replicate:Village", "Replicate:Line","Replicate:Cryopreserved",  "Replicate:Site", "Residual")
+selected_vars <- c("Line", "Village", "Site",  "Replicate","Line:Village", "Line:Site", "Village:Site", "Replicate:Village", "Replicate:Line", "Replicate:Site", "Residual")
 # var_colors <- c(colorRampPalette(brewer.pal(11, "Spectral"))(14), "grey90")
 var_colors <- c("#4734a9", rev(c("#115cc7", "#a4c3c8", "#499090", "#405940", "#685a54", "#f7d312", "#f8bf33", "#e4910e", "#f65d19", "#931519", "#f2c1ce", "#e17aab", "#a186aa")), "gray80")
 # var_colors <- c("#a2104d", "#fde64b", "#3e90c1", "#358856", "#f5764e", "#685ba6", "#728d01", "#abd302", "#8b6248", "#6ec4aa", "gray90")
@@ -95,7 +96,7 @@ icc_interaction_dt$grp_size <- factor(icc_interaction_dt$grp_size, levels = uniq
 ### *** Need to add individual effects without interaction in to interaction dt *** ###
 icc_interaction_plus_dt <- rbind(icc_interaction_dt, icc_dt[!(gene %in% icc_interaction_dt$gene)])
 
-fwrite(icc_interaction_plus_dt, paste0(outdir, "effect_results.tsv"), sep = "\t")
+# fwrite(icc_interaction_plus_dt, paste0(outdir, "effect_results.tsv"), sep = "\t")
 icc_interaction_plus_dt <- fread(paste0(outdir, "effect_results.tsv"), sep = "\t")
 
 
@@ -105,6 +106,33 @@ group_size$grp_size <- paste0(group_size$grp, "\nN = ", group_size$size)
 
 icc_interaction_plus_dt <- group_size[icc_interaction_plus_dt, on = "grp"]
 icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, levels = unique(group_size$grp_size))
+
+
+var_explained_manuscript <- icc_interaction_plus_dt[,c("grp", "percent", "P", "gene")]
+
+colnames(var_explained_manuscript) <- c("Covariate", "Percent_Variance_Explained", "P", "ENSG")
+
+
+
+
+##### Add gene IDs for easy identification downstream #####
+GeneConversion1 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/DRENEA_1/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+GeneConversion2 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/Village_B_1_week/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+
+GeneConversion <- unique(rbind(GeneConversion1, GeneConversion2))
+GeneConversion <- GeneConversion[!duplicated(GeneConversion$X1),]
+GeneConversion$X3 <- NULL
+colnames(GeneConversion) <- c("ENSG", "Gene_ID")
+
+GeneConversion <- data.table(GeneConversion)
+
+
+### Add the gene IDs to the icc_dt ###
+
+var_explained_manuscript <- GeneConversion[var_explained_manuscript, on =c("ENSG")]
+
+fwrite(var_explained_manuscript, paste0(outdir, "fresh_variance_explained_manuscript.tsv"), sep = "\t")
+
 
 
 
@@ -232,6 +260,59 @@ ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_rai
 ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.pdf"), height = 4, width = 7)
 
 
+### Mean var explained by each covariate ###
+var_summary_dt <- data.table(grp = unique(icc_interaction_plus_dt$grp), Mean = as.numeric(NA), Median = as.numeric(NA), N_1pct = as.numeric(NA))
+
+for (variable in unique(icc_interaction_plus_dt$grp)){
+    print(variable)
+    var_summary_dt[grp == variable, "Mean"] <- mean(icc_interaction_plus_dt[grp == variable]$percent_round)
+    var_summary_dt[grp == variable]$Median <- median(icc_interaction_plus_dt[grp == variable]$percent_round)
+    var_summary_dt[grp == variable]$N_1pct <- nrow(icc_interaction_plus_dt[grp == variable & percent_round >=1])
+}
+
+
+
+
+##### Pull just the genes explained by 1% line effect and show other effects #####
+icc_interaction_sig_line_1pct <- icc_interaction_plus_dt[gene %in% icc_interaction_plus_dt[grp == "Line" & percent_round >= 1]$gene]
+icc_interaction_sig_line_1pct <- icc_interaction_sig_line_1pct[icc_interaction_sig_line_1pct[grp == "Line"][rev(order(percent)), "gene"], on = "gene"]
+
+
+icc_interaction_sig_line_1pct_list <- list()
+
+
+for (ensg in unique(icc_interaction_sig_line_1pct$gene)){
+    group <- icc_interaction_sig_line_1pct[gene == ensg & grp != "Residual"][which.max(percent)]$grp
+    icc_interaction_sig_line_1pct_list[[group]][[ensg]] <- icc_interaction_sig_line_1pct[gene == ensg]
+}
+
+icc_interaction_sig_line_1pct_grouped <- lapply(icc_interaction_sig_line_1pct_list, function(x) do.call(rbind, x))
+icc_interaction_sig_line_1pct_grouped <- lapply(names(icc_interaction_sig_line_1pct_grouped), function(x){
+    icc_interaction_sig_line_1pct_grouped[[x]]$largest_contributor <- x
+    return(icc_interaction_sig_line_1pct_grouped[[x]])
+})
+
+icc_interaction_sig_line_1pct_grouped_dt <- do.call(rbind, icc_interaction_sig_line_1pct_grouped)
+
+icc_interaction_sig_line_1pct_grouped_dt$largest_contributor <- factor(icc_interaction_sig_line_1pct_grouped_dt$largest_contributor, levels = c("Line", "Village", "Site", "Replicate", "Line:Village", "Line:Site", "Village:Site", "Replicate:Village"))
+
+pLine_1pct <- ggplot() +
+						geom_bar(data = icc_interaction_sig_line_1pct_grouped_dt, aes(factor(gene, levels = unique(icc_interaction_sig_line_1pct_grouped_dt$gene)), percent, fill = factor(grp, levels = rev(vars))), position = "stack", stat = "identity", alpha = 0.75) +
+						theme_classic() +
+						facet_grid(. ~ largest_contributor, scales = "free_x", space = "free_x") +
+						scale_fill_manual(values = var_colors) +
+						ylab("Percent Gene Expression Variance Explained") +
+						theme(axis.title.x=element_blank(),
+                            axis.text.x = element_blank(),
+                            panel.spacing.x=unit(0, "lines"),
+                            axis.ticks.x = element_blank()) +
+                        geom_hline(yintercept = 1, linetype = "dashed") 
+
+
+ggsave(pLine_1pct, filename = paste0(outdir, "variance_explained_stacked_line_1pct.png"), height = 4, width = 7)
+ggsave(pLine_1pct, filename = paste0(outdir, "variance_explained_stacked_line_1pct.pdf"), height = 4, width = 7)
+
+
 
 ##### Pull just the significant variances per gene #####
 icc_interaction_sig_list <- list()
@@ -257,18 +338,19 @@ grp_size_order <- c("Line\nN = 6177", "Village\nN = 3713", "Site\nN = 6143", "Re
 
 
 pRaincloud_interaction_sig <- ggplot(icc_interaction_sig_dt, aes(x = percent, y = factor(grp_size, levels = grp_size_order), fill = factor(grp, levels = rev(vars)))) + 
-                geom_density_ridges(stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
-                geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
+                geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..)) +
+                geom_point(size =1, position = position_nudge(y=-0.11), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
                 theme_classic() +
                 theme(axis.title.y=element_blank()) +
                 xlab("Percent Variance Explained") +
                 scale_y_discrete(expand = c(0.03, 0)) +
-                scale_fill_manual(values = var_colors) +
-                geom_vline(xintercept = 1, linetype = "dashed", color = "firebrick3")
+                scale_fill_manual(values = var_colors, name = "Variable") +
+                scale_color_manual(values = var_colors, name = "Variable") +
+                geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
 
-ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.png"), height = 8, width = 7)
-ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.pdf"), height = 8, width = 7)
+ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.png"), height = 4, width = 7)
+ggsave(pRaincloud_interaction_sig, filename = paste0(outdir, "variance_explained_raincloud_interaction_significant.pdf"), height = 4, width = 7)
 
 
 total <- icc_interaction_sig_dt[,.(count = .N), by = .(grp)]
@@ -503,13 +585,11 @@ ggsave(bar_proportions_rb, filename = paste0(outdir, "variance_explained_bar_rb_
 
 
 ### Plot Pluripotency Genes ###
-pluri_genes <- fread(paste0(dir,"data/pluripotency_genes.tsv"), sep = "\t", col.names = "Gene_ID", header = FALSE)
+pluri_genes <- fread(paste0(dir,"data/pluripotency_genes.tsv"), sep = "\t")
 
 
-pluri_genes <- GeneConversion[pluri_genes, on = "Gene_ID"]
 
-
-icc_dt_pluri_genes <- icc_interaction_plus_dt[pluri_genes,on = c("gene")]
+icc_dt_pluri_genes <- icc_interaction_plus_dt[pluri_genes,on = c("gene" = "ENSG")]
 icc_dt_pluri_genes$grp <- factor(icc_dt_pluri_genes$grp, levels = rev(selected_vars))
 icc_dt_pluri_genes <- icc_dt_pluri_genes[data.table(gene = icc_dt_pluri_genes[grp == "Residual"][order(percent)]$gene), on = "gene"]
 icc_dt_pluri_genes$Gene_ID <- factor(icc_dt_pluri_genes$Gene_ID, levels = unique(icc_dt_pluri_genes$Gene_ID))
@@ -529,6 +609,29 @@ pPluri_Genes_Cont <- ggplot() +
 
 ggsave(pPluri_Genes_Cont, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions.png"), width = 6, height = 4.5)
 ggsave(pPluri_Genes_Cont, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions.pdf"), width = 6, height = 4.5)
+
+
+pPluri_Genes_Cont_top <- ggplot() +
+						geom_bar(data = icc_dt_pluri_genes[GeneID %in% c("MYC", "NANOG", "POU5F1", "SOX2")], aes(Gene_ID, percent, fill = grp), position = "stack", stat = "identity", alpha = 0.75) +
+						theme_classic() +
+						# facet_wrap(Gene_ID ~ ., nrow = 3) +
+						scale_fill_manual(values = var_colors) +
+						theme(plot.title = element_text(hjust = 0.5),
+                            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+						ylab("Percent Gene Expression Variance Explained") +
+                        ggtitle("Variance of\nPluripotency Genes Explained") +
+						theme(axis.title.x=element_blank())
+
+ggsave(pPluri_Genes_Cont_top, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions_four.png"), width = 3, height = 4.5)
+ggsave(pPluri_Genes_Cont_top, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions_four.pdf"), width = 3, height = 4.5)
+
+
+icc_dt_pluri_genes[grp == "Line" & GeneID %in% c("MYC", "NANOG", "POU5F1", "SOX2")]
+mean(icc_dt_pluri_genes[grp == "Line" ]$percent_round)
+median(icc_dt_pluri_genes[grp == "Line" ]$percent_round)
+median(icc_dt_pluri_genes[grp == "Village" ]$percent_round)
+icc_dt_pluri_genes[grp == "Village" ]
+median(icc_dt_pluri_genes[grp == "Line:Village" ]$percent_round)
 
 
 

@@ -39,6 +39,8 @@ seurat <- readRDS(paste0(datadir,"seurat_integrated_all_times_clustered.rds"))
 seurat@meta.data$Location <- gsub("_.+", "", seurat@meta.data$Location_Time)
 seurat@meta.data$phases <- factor(seurat@meta.data$phases, levels = c("G1", "S", "G2M"))
 seurat@meta.data$Village <- gsub("Baseline", "Uni-Culture", seurat@meta.data$Time) %>% gsub("Village Day 4", "Village", .) %>% gsub("Thawed Village Day 0", "Uni-Culture", .) %>% gsub("Thawed Village Day 7", "Village", .)
+seurat@meta.data$Cryopreserved <- gsub("Baseline", "Fresh", seurat@meta.data$Time) %>% gsub("Village Day 4", "Fresh", .) %>% gsub("Thawed Village Day \\d", "Cryopreserved", .)
+
 
 ##### Set up Colors #####
 cell_line_colors <- c("FSA0006" = "#F79E29", "MBE1006" = "#9B2C99", "TOB0421"= "#35369C")
@@ -48,6 +50,7 @@ village_colors <- c("Uni-Culture" = "#613246", "Village" = "#A286AA")
 cycle_colors <- c("G1" = "#4393C3", "S" = "#92C5DE", "G2M" = "#D1E5F0")
 site_colors <- c("Brisbane" = "#536CB4", "Sydney" = "#62BD67", "Melbourne" = "#D24F72")
 cluster_colors <- c("0" = "#C9D8EA", "1" = "#928CC5", "2" = "#A7C9A9", "3" = "#179085", "4" = "#F79F9F", "5" = "#C35B76", "6" = "#F4C893", "7" = "#F6AA4B")
+cryo_colors <- c("Fresh" = "#e7bbc6", "Cryopreserved" = "#d08790")
 
 
 ##### Make UMAPS #####
@@ -64,10 +67,18 @@ UMAP_cell_line <- DimPlot(seurat, reduction = "umap", group.by = c("Final_Assign
 save_figs(UMAP_cell_line, basename = paste0(outdir,"Cell_Line_umap"),width = 15, height = 15)
 
 ## By Location ##
-UMAP_site <- DimPlot(seurat, reduction = "umap", group.by = c("Location"), cols = alpha(site_colors, 0.7)) + labs(color="Location") + ggtitle(NULL)
+UMAP_site <- DimPlot(seurat, reduction = "umap", group.by = c("Location"), cols = alpha(site_colors, 0.7), shuffle = TRUE) + labs(color="Location") + ggtitle(NULL)
 UMAP_site[[1]]$layers[[1]]$aes_params$shape = 16
 UMAP_site[[1]]$layers[[1]]$aes_params$size = 0.3
 save_figs(UMAP_site, basename = paste0(outdir,"Location_umap"),width = 15, height = 15)
+
+
+## By Cryopreserved ##
+UMAP_cryo <- DimPlot(seurat, reduction = "umap", group.by = c("Cryopreserved"), order = c("Cryopreserved", "Fresh"), cols = alpha(cryo_colors, 0.7)) + labs(color="Cryopreserved") + ggtitle(NULL)
+UMAP_cryo[[1]]$layers[[1]]$aes_params$shape = 16
+UMAP_cryo[[1]]$layers[[1]]$aes_params$size = 0.3
+save_figs(UMAP_cryo, basename = paste0(outdir,"Cryopreserved_umap"),width = 15, height = 15)
+
 
 ## By Cell Cycle Phase ##
 Idents(seurat) <- "phases"

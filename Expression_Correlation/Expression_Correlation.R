@@ -248,6 +248,7 @@ correlations <- lapply(unique(summary_SCT$ID), function(group1){
 })
 
 saveRDS(correlations, paste0(outdir, "correlations.rds"))
+correlations <- readRDS(paste0(outdir, "correlations.rds"))
 
 
 correlations_pearson <- lapply(unique(summary_SCT$ID), function(group1){
@@ -315,6 +316,9 @@ correlations_data <- lapply(unique(summary_SCT_data$ID), function(group1){
 })
 
 
+saveRDS(correlations_data, paste0(outdir, "correlations_data.rds"))
+correlations_data <- readRDS(paste0(outdir, "correlations_data.rds"))
+
 
 correlations_data_dt <- do.call(rbind, correlations_data)
 correlations_data_dt[, c("Location1", "Village1", "Line1", "Replicate1") := tstrsplit(Group1, "-", fixed=TRUE)]
@@ -367,6 +371,9 @@ ggsave(correlation_fresh_dist, filename = paste0(outdir, "correlation_distributi
 ggsave(correlation_fresh_dist, filename = paste0(outdir, "correlation_distributions_fresh.pdf"), width = 3)
 
 
+fwrite(correlations_data_fresh_combined_dt, paste0(outdir,"correlation_distribution_table.tsv"), sep = "\t")
+
+
 ##### For cryopreserdd #####
 
 correlations_data_combined_cryo_dt <- correlations_data_dt[grepl("Sydney", Location1) & grepl("Sydney", Location2)]
@@ -405,6 +412,52 @@ correlation_cryo_dist <- ggplot(correlations_data_cryo_combined_dt, aes(Spearman
 
 ggsave(correlation_cryo_dist, filename = paste0(outdir, "correlation_distributions_cryo.png"), width = 3)
 ggsave(correlation_cryo_dist, filename = paste0(outdir, "correlation_distributions_cryo.pdf"), width = 3)
+
+
+
+##### For cryopreserd with fresh #####
+correlations_data_combined_cryo_fresh_dt <- correlations_data_dt[grepl("Sydney", Location1) | grepl("Sydney", Location2)]
+
+
+correlations_data_combined_cryo_fresh_dt$Cryopreserved1 <- ifelse(grepl("Sydney",correlations_data_combined_cryo_fresh_dt$Location1), gsub("Sydney_", "",correlations_data_combined_cryo_fresh_dt$Location1), "Fresh")
+correlations_data_combined_cryo_fresh_dt$Cryopreserved2 <- ifelse(grepl("Sydney",correlations_data_combined_cryo_fresh_dt$Location2), gsub("Sydney_", "",correlations_data_combined_cryo_fresh_dt$Location2), "Fresh")
+
+
+mean(correlations_data_dt[grepl("Sydney_Fresh-Baseline", Group1) | grepl("Sydney_Fresh-Baseline", Group2)]$Spearman)
+mean(correlations_data_dt[grepl("Sydney_Cryopreserved-Baseline", Group1) | grepl("Sydney_Cryopreserved-Baseline", Group2)]$Spearman)
+mean(correlations_data_dt[grepl("Sydney_Fresh-Village", Group1) | grepl("Sydney_Fresh-Village", Group2)]$Spearman)
+mean(correlations_data_dt[grepl("Sydney_Cryopreserved-Village", Group1) | grepl("Sydney_Cryopreserved-Village", Group2)]$Spearman, na.rm = TRUE)
+
+
+#####  #####
+correlations_data_cryo_fresh_village_dt <- correlations_data_combined_cryo_fresh_dt[Line1 == Line2 & Village1 != Village2 & Group1 != Group2]
+correlations_data_cryo_fresh_village_dt$Group <- "Village"
+
+correlations_data_cryo_fresh_village_dt$Site_color <- ifelse(correlations_data_cryo_fresh_village_dt$Cryopreserved1 == "Fresh", correlations_data_cryo_fresh_village_dt$Location1, 
+														ifelse(correlations_data_cryo_fresh_village_dt$Cryopreserved2 == "Fresh", correlations_data_cryo_fresh_village_dt$Location2, "")
+
+
+correlations_data_cryo_fresh_combined_dt$Group <- factor(correlations_data_cryo_combined_dt$Group, levels = c("Replicate", "Cryopreserved", "Village", "Line"))
+
+correlations_data_cryo_fresh_combined_dt_med <- correlations_data_cryo_combined_dt %>% 
+  group_by(Group) %>%
+  mutate(median = median(as.numeric(Spearman)))
+
+
+
+correlation_cryo_dist <- ggplot(correlations_data_cryo_combined_dt, aes(Spearman)) +
+	geom_histogram(bins = 50) +
+	facet_wrap(vars(factor(Group, levels = c("Replicate", "Cryopreserved", "Village", "Line"))), ncol = 1, scales = "free_y") +
+	theme_classic() +
+	geom_vline(data = correlations_data_cryo_combined_dt_med, aes(xintercept = median), linetype = "dashed")
+
+ggsave(correlation_cryo_dist, filename = paste0(outdir, "correlation_distributions_cryo.png"), width = 3)
+ggsave(correlation_cryo_dist, filename = paste0(outdir, "correlation_distributions_cryo.pdf"), width = 3)
+
+
+
+
+
 
 
 

@@ -30,10 +30,19 @@ conda activate vcftools
 
 conda deactivate
 
+
+### Liftover snps to hg19 ###
+SIF=/directflow/SCCGGroupShare/projects/DrewNeavin/Demultiplex_Benchmark/test_pipeline/Imputation_Urmo/v1.0.1/WG1-pipeline-QC_imputation.sif
+CHAIN=/directflow/SCCGGroupShare/projects/DrewNeavin/References/CrossMap/GRCh38_to_GRCh37.chain
+FASTA=/directflow/SCCGGroupShare/projects/DrewNeavin/References/ENSEMBLfasta/GRCh37/genome.fa
+
+singularity exec --bind /directflow $SIF CrossMap.py vcf $CHAIN $INTERSECT_OUT/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes.vcf $FASTA $INTERSECT_OUT/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes_hg19.vcf
+
+
 ### Redo intersection with these SNPs ##$#
 conda activate bedtools
 
-    bedtools intersect -a $OUT/kilpinen.bed -b $INTERSECT_OUT/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes.vcf -wa -wb > $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered.bed
+    bedtools intersect -a $OUT/kilpinen.bed -b $INTERSECT_OUT/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes_hg19.vcf -wa -wb > $INTERSECT_OUT/kilpinen_imputed_overlapping_filtered.bed
 
 conda deactivate
 
@@ -65,7 +74,7 @@ sed -i '1i snp\tgene' $INTERSECT_OUT/gene_snp_list.tsv
 ### Intersect with these SNPs ##$#
 conda activate bedtools
 
-    bedtools intersect -a $OUT/deboever.bed -b $INTERSECT_OUT/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes.vcf -wa -wb > $INTERSECT_OUT/deboever_imputed_overlapping_filtered.bed
+    bedtools intersect -a $OUT/deboever.bed -b $INTERSECT_OUT/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes_hg19.vcf -wa -wb > $INTERSECT_OUT/deboever_imputed_overlapping_filtered.bed
 
 conda deactivate
 

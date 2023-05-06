@@ -103,6 +103,13 @@ results_brisbane[2].summary()
 #                    MBE1006           0.480325      1500.238853         -0.108542
 #                    TOB0421           0.000000       897.896510         -0.801505
 
+# Get average difference
+### couldn't work out how to pull from summary in python, will do manually - angry emoji
+
+
+results_brisbane[0].summary_extended()
+results_brisbane[1].summary_extended()
+results_brisbane[2].summary_extended()
 
 
 brisbane_logfc_results_dt = pd.DataFrame({'Cell Type': ['FSA0006', 'MBE1006', 'TOB0421'],
@@ -182,6 +189,91 @@ results_melbourne[2].summary()
 # Village[T.Village] FSA0006           1.139058      3411.776681          1.136354
 #                    MBE1006          -0.780606       662.039516         -1.633135
 #                    TOB0421           0.000000      1112.017136         -0.506959
+
+
+
+# results_melbourne[0].summary_extended().to_csv(outdir + "melbourne_rep1_summary_extended.tsv", sep = "\t")
+# results_melbourne[1].summary_extended().to_csv(outdir + "melbourne_rep2_summary_extended.tsv", sep = "\t")
+# results_melbourne[2].summary_extended().to_csv(outdir + "melbourne_rep3_summary_extended.tsv", sep = "\t")
+
+
+results_melbourne[0].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 0
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 211.069 sec. Acceptance rate: 72.1%
+
+# Intercepts:
+#            Final Parameter  HDI 3%  HDI 97%     SD  Expected Sample
+# Cell Type                                                          
+# FSA0006              7.019   5.145    8.814  1.027       958.971621
+# MBE1006              7.539   5.694    9.373  1.028      1613.016781
+# TOB0421              7.509   5.627    9.305  1.027      1565.344931
+
+
+# Effects:
+#                               Final Parameter  HDI 3%  HDI 97%     SD  Inclusion probability  Expected Sample  log2-fold change
+# Covariate          Cell Type                                                                                                   
+# Village[T.Village] FSA0006           0.000000   0.000    0.000  0.000                    0.0      1737.951492          0.857828
+#                    MBE1006          -0.666177  -0.767   -0.564  0.053                    1.0      1501.597873         -0.103263
+#                    TOB0421          -1.150533  -1.264   -1.043  0.059                    1.0       897.783968         -0.802040
+
+
+results_melbourne[1].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 1
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 216.384 sec. Acceptance rate: 35.2%
+
+# Intercepts:
+#            Final Parameter  HDI 3%  HDI 97%     SD  Expected Sample
+# Cell Type                                                          
+# FSA0006              6.137   5.029    6.951  0.693       954.967911
+# MBE1006              6.658   5.538    7.457  0.688      1607.889516
+# TOB0421              6.637   5.508    7.467  0.703      1574.475907
+
+
+# Effects:
+#                               Final Parameter  HDI 3%  HDI 97%     SD  Inclusion probability  Expected Sample  log2-fold change
+# Covariate          Cell Type                                                                                                   
+# Village[T.Village] FSA0006           0.663964   0.565    0.783  0.056                    1.0      1727.811797          0.855422
+#                    MBE1006           0.000000   0.000    0.000  0.000                    0.0      1497.642328         -0.102475
+#                    TOB0421          -0.475140  -0.597   -0.376  0.055                    1.0       911.879208         -0.787957
+
+results_melbourne[2].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 2
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 215.073 sec. Acceptance rate: 53.5%
+
+# Intercepts:
+#            Final Parameter  HDI 3%  HDI 97%     SD  Expected Sample
+# Cell Type                                                          
+# FSA0006              6.318   4.911    7.935  0.975       957.849632
+# MBE1006              6.841   5.453    8.440  0.977      1615.970211
+# TOB0421              6.808   5.423    8.421  0.979      1563.513490
+
+
+# Effects:
+#                               Final Parameter  HDI 3%  HDI 97%     SD  Inclusion probability  Expected Sample  log2-fold change
+# Covariate          Cell Type                                                                                                   
+# Village[T.Village] FSA0006           1.152184   1.044    1.260  0.055                    1.0      1738.891749          0.860297
+#                    MBE1006           0.482503   0.388    0.577  0.052                    1.0      1501.653833         -0.105848
+#                    TOB0421           0.000000   0.000    0.000  0.000                    0.0       896.787752         -0.801953
+
+
 
 melbourne_logfc_results_dt = pd.DataFrame({'Cell Type': ['FSA0006', 'MBE1006', 'TOB0421'],
         'FSA0006_ref': [1.147833, -1.636737, -0.588923],
@@ -263,6 +355,84 @@ results_sydney[2].summary()
 #                    TOB0421                0.0       824.401884               0.0
 
 
+
+results_sydney[0].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 0
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 201.450 sec. Acceptance rate: 58.3%
+
+# Intercepts:
+#            Final Parameter  HDI 3%  HDI 97%     SD  Expected Sample
+# Cell Type                                                          
+# FSA0006              5.127   3.915    6.303  0.625      1131.273416
+# MBE1006              5.229   3.959    6.361  0.629      1252.753483
+# TOB0421              4.807   3.663    6.004  0.621       821.473102
+
+
+# Effects:
+#                               Final Parameter  HDI 3%  HDI 97%     SD  Inclusion probability  Expected Sample  log2-fold change
+# Covariate          Cell Type                                                                                                   
+# Village[T.Village] FSA0006                0.0   0.000    0.000  0.000               0.000000      1131.273416               0.0
+#                    MBE1006                0.0  -0.256    0.028  0.072               0.405067      1252.753483               0.0
+#                    TOB0421                0.0  -0.170    0.150  0.043               0.274533       821.473102               0.0
+
+results_sydney[1].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 1
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 201.570 sec. Acceptance rate: 55.7%
+
+# Intercepts:
+#            Final Parameter  HDI 3%  HDI 97%     SD  Expected Sample
+# Cell Type                                                          
+# FSA0006              5.004   3.969    6.005  0.546      1131.297199
+# MBE1006              5.100   4.049    6.086  0.548      1245.285646
+# TOB0421              4.693   3.652    5.684  0.547       828.917155
+
+
+# Effects:
+#                               Final Parameter  HDI 3%  HDI 97%     SD  Inclusion probability  Expected Sample  log2-fold change
+# Covariate          Cell Type                                                                                                   
+# Village[T.Village] FSA0006                0.0  -0.066    0.233  0.061               0.338667      1131.297199               0.0
+#                    MBE1006                0.0   0.000    0.000  0.000               0.000000      1245.285646               0.0
+#                    TOB0421                0.0  -0.131    0.190  0.046               0.284733       828.917155               0.0
+
+results_sydney[2].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 2
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 197.450 sec. Acceptance rate: 52.1%
+
+# Intercepts:
+#            Final Parameter  HDI 3%  HDI 97%     SD  Expected Sample
+# Cell Type                                                          
+# FSA0006              5.077   4.100    6.166  0.587      1126.016304
+# MBE1006              5.185   4.187    6.299  0.596      1254.435925
+# TOB0421              4.766   3.769    5.855  0.591       825.047771
+
+
+# Effects:
+#                               Final Parameter  HDI 3%  HDI 97%     SD  Inclusion probability  Expected Sample  log2-fold change
+# Covariate          Cell Type                                                                                                   
+# Village[T.Village] FSA0006                0.0  -0.069    0.221  0.058               0.339867      1126.016304               0.0
+#                    MBE1006                0.0  -0.242    0.059  0.068               0.392600      1254.435925               0.0
+#                    TOB0421                0.0   0.000    0.000  0.000               0.000000       825.047771               0.0
+
+
+
 sydney_logfc_results_dt = pd.DataFrame({'Cell Type': ['FSA0006', 'MBE1006', 'TOB0421'],
         'FSA0006_ref': [0, 0, 0],
         'MBE1006_ref': [0, 0, 0],
@@ -340,6 +510,100 @@ results_sydney_cryo[2].summary()
 # Village[T.Village] FSA0006           1.925718      1608.624854          1.359406
 #                    MBE1006           0.000000       320.030556         -1.418819
 #                    TOB0421           0.000000       266.511256         -1.418819
+
+
+
+results_sydney_cryo[0].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 0
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 211.440 sec. Acceptance rate: 74.1%
+
+# Intercepts:
+#            Final Parameter  ...  Expected Sample
+# Cell Type                   ...                 
+# FSA0006              4.711  ...       631.273016
+# MBE1006              5.057  ...       892.242932
+# TOB0421              4.773  ...       671.650718
+
+# [3 rows x 5 columns]
+
+
+# Effects:
+#                               Final Parameter  ...  log2-fold change
+# Covariate          Cell Type                   ...                  
+# Village[T.Village] FSA0006           0.000000  ...          1.359483
+#                    MBE1006          -2.051918  ...         -1.600809
+#                    TOB0421          -1.813005  ...         -1.256130
+
+# [3 rows x 7 columns]
+
+
+
+results_sydney_cryo[1].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 cell types
+# Reference index: 1
+# Formula: Village
+# Spike-and-slab threshold: 1.000
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 214.655 sec. Acceptance rate: 44.2%
+
+# Intercepts:
+#            Final Parameter  ...  Expected Sample
+# Cell Type                   ...                 
+# FSA0006              3.108  ...       629.681591
+# MBE1006              3.412  ...       853.387975
+# TOB0421              3.231  ...       712.097101
+
+# [3 rows x 5 columns]
+
+
+# Effects:
+#                               Final Parameter  ...  log2-fold change
+# Covariate          Cell Type                   ...                  
+# Village[T.Village] FSA0006           1.966162  ...          1.370768
+#                    MBE1006           0.000000  ...         -1.465804
+#                    TOB0421           0.000000  ...         -1.465804
+
+# [3 rows x 7 columns]
+
+results_sydney_cryo[2].summary_extended()
+# Compositional Analysis summary (extended):
+
+# Data: 6 samples, 3 ce
+# ll types
+# Reference index: 2
+# Formula: Village
+# Spike-and-slab threshold: 0.997
+
+# MCMC Sampling: Sampled 20000 chain states (5000 burnin samples) in 219.024 sec. Acceptance rate: 45.9%
+
+# Intercepts:
+#            Final Parameter  ...  Expected Sample
+# Cell Type                   ...
+# FSA0006              3.152  ...       629.950098
+# MBE1006              3.464  ...       860.609283
+# TOB0421              3.264  ...       704.607286
+
+# [3 rows x 5 columns]
+
+
+# Effects:
+#                               Final Parameter  ...  log2-fold change
+# Covariate          Cell Type                   ...
+# Village[T.Village] FSA0006           1.909161  ...          1.348700
+#                    MBE1006           0.000000  ...         -1.405636
+#                    TOB0421           0.000000  ...         -1.405636
+
+# [3 rows x 7 columns]
+
+
 
 sydney_logfc_results_dt_cryo = pd.DataFrame({'Cell Type': ['FSA0006', 'MBE1006', 'TOB0421'],
         'FSA0006_ref': [1.368064, -1.600354, -1.265402],

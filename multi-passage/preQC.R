@@ -6,6 +6,7 @@ library(colorspace)
 library(Nebulosa)
 library(RColorBrewer)
 library(scran)
+library(ggbreak) 
 
 
 ##### Set up directories #####
@@ -102,8 +103,9 @@ rownames(assigned) <- colnames(seurat)
 write.table(assigned, file = paste0(outdir,"CellCycleProportions.txt"), quote = F, sep = "\t") #Save so that can read in and don't have to wait to recompute again
 assigned <- read.table(paste0(outdir,"CellCycleProportions.txt"), sep = "\t")
 
-seurat <- AddMetaData(seurat, assigned)
+AddMetaData(seurat, assigned)
 saveRDS(seurat, paste0(outdir,"seurat_all_cells_cell_cycle.rds"))
+seurat <- readRDS(paste0(outdir,"seurat_all_cells_cell_cycle.rds"))
 
 
 
@@ -281,13 +283,20 @@ seurat_sub_mt <- subset(seurat_sub, subset = percent.mt < 25)
 ### Integrate different time-points
 seurat_sub_mt_list <- SplitObject(seurat_sub_mt, split.by = "Pool")
 seurat_sub_mt_list <- lapply(X = seurat_sub_mt_list, function(x) SCTransform(x, vars.to.regress = c("scores.G1", "scores.S", "scores.G2M", "percent.mt", "percent.rb"), return.only.var.genes = FALSE))
-features <- SelectIntegrationFeatures(object.list = seurat_sub_mt_list, nfeatures = 3000)
-seurat_sub_mt_list <- PrepSCTIntegration(object.list = seurat_sub_mt_list, anchor.features = features)
+# features <- SelectIntegrationFeatures(object.list = seurat_sub_mt_list, nfeatures = 3000)
+features <- Reduce(intersect, lapply(seurat_sub_mt_list, rownames))  
+seurat_sub_mt_list_prep <- PrepSCTIntegration(object.list = seurat_sub_mt_list, anchor.features = features)
 
 saveRDS(seurat_sub_mt_list, paste0(outdir,"seurat_sub_mt_list.rds"))
 seurat_sub_mt_list <- readRDS(paste0(outdir,"seurat_sub_mt_list.rds"))
 
-seurat_sub_mt_anchors <- FindIntegrationAnchors(object.list = seurat_sub_mt_list, normalization.method = "SCT",
+saveRDS(seurat_sub_mt_list_prep, paste0(outdir,"seurat_sub_mt_list_prep.rds"))
+seurat_sub_mt_list_prep <- readRDS(paste0(outdir,"seurat_sub_mt_list_prep.rds"))
+
+
+### Check if prepsctintegration impact the sct scale.data, if not, just merge them together
+
+seurat_sub_mt_anchors <- FindIntegrationAnchors(object.list = seurat_sub_mt_list_prep, normalization.method = "SCT",
     anchor.features = features)
 combined_sct <- IntegrateData(anchorset = seurat_sub_mt_anchors, normalization.method = "SCT")
 
@@ -399,20 +408,24 @@ ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area.pdf"), width = 7, 
 
 village_summary_singlets <- data.table(prop.table(table(combined_sct@meta.data[,c("Assignment", "Pool")]), margin = 2))
 village_summary_singlets$Assignment <- factor(village_summary_singlets$Assignment, levels = rev(village_summary_singlets[Pool == "Village_P8"]$Assignment[order(village_summary_singlets[Pool == "Village_P8"]$N)]))
+village_summary_singlets$Pool <- as.numeric(gsub("Village_P", "", village_summary_singlets$Pool))
+colnames(village_summary_singlets) <- gsub("Pool", "Day", colnames(village_summary_singlets))
+
+
 
 colors <- readRDS("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/Nona_multiome/line_colors")
 colors <- colors[levels(village_summary_singlets$Assignment)]
 
 
-p_stacked_area <- ggplot(village_summary_singlets, aes(x = as.numeric(as.character(gsub("Village_P","", Pool))), y = N, fill = factor(Assignment), group = Assignment)) +
-    geom_area(alpha=0.6 , size=0.5, colour="black") +
+p_stacked_area_filt <- ggplot(village_summary_singlets, aes(x = Day, y = N, fill = factor(Assignment), group = Assignment)) +
+    geom_area(alpha=0.6 , size=0.1, colour="black") +
     theme_classic() +
     scale_fill_manual(values = colors) +
     xlab("Passage") +
     ylab("Proportion of Cells")
-ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area_filtered.png"), width = 7, height = 4)
-ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area_filtered.pdf"), width = 7, height = 4)
 
+ggsave(p_stacked_area_filt, filename = paste0(outdir,"stacked_area_filtered.png"), width = 4, height = 2)
+ggsave(p_stacked_area_filt, filename = paste0(outdir,"stacked_area_filtered.pdf"), width = 4, height = 2)
 
 
 
@@ -421,6 +434,109 @@ ggsave(p_stacked_area, filename = paste0(outdir,"stacked_area_filtered.pdf"), wi
 
 saveRDS(combined_sct, paste0(outdir,"time-integrated_filtered_seurat.rds"))
 combined_sct <- readRDS(paste0(outdir,"time-integrated_filtered_seurat.rds"))
+
+
+
+##### Read in Nona's original data and add pre-cryopreserved numbers with break #####
+non_dir <- "/directflow/SCCGGroupShare/projects/nonfar/analysis/cardiac_multiome_directflow/demux_obj/"
+
+
+##### Get a list of the village pools #####
+villages <- list.files(non_dir, pattern = "Village")
+villages <- grep("DemuxALL", villages, value = TRUE)
+
+
+
+##### Get the singlets from the file #####
+village_id_list <- lapply(villages, function(x){
+    print(x)
+    # tmp <- fread(paste0(datadir,x,"/CombinedResults/Final_Assignments_demultiplexing_doublets_new_edit.txt"), sep = "\t")
+    tmp <- readRDS(paste0(non_dir,x))
+    dt <- data.table(tmp@meta.data)
+    dt$Pool_ID <- gsub("_DemuxALL.rds", "",x)
+    dt$Day <- as.numeric(as.character(gsub("Village_Day", "", dt$Pool_ID)))
+    return(dt)
+})
+
+village_id <- do.call(rbind, village_id_list)
+
+village_id$Pool_ID_updated <- gsub("Day7$", "Day5b", village_id$Pool_ID) %>%
+                                gsub("Day5$", "Day7b", .) %>% 
+                                    gsub("Day15$", "Day4b", .) %>%
+                                        gsub("Day4$", "Day15b", .) %>%
+                                            gsub("b", "", .)
+
+village_id$Day_updated <- as.numeric(as.character(gsub("Village_Day", "", village_id$Pool_ID_updated)))
+
+### Update columnes ###
+village_id$Day <- factor(village_id$Day, levels = c(0,1,2,3,4,5,7,15))
+village_id$Assignment <- gsub("^0_", "", village_id$Assignment) %>%
+                                gsub("D-", "", .) %>%
+                                    gsub("\\.\\d\\.", "", .) %>%
+                                        gsub("N-", "", .) %>%
+                                            gsub("-P36", "", .)  %>%
+                                                gsub("-", "", .)
+
+village_id$DropletType <- ifelse(village_id$DropletType != "singlet", "doublet", village_id$DropletType)
+
+data.table(prop.table(table(village_id[,c("DropletType", "Day_updated")]), margin = 2))
+
+village_summary <- data.table(prop.table(table(village_id[,c("Assignment", "Day_updated")]), margin = 2))
+
+village_summary_singlets_non <- data.table(prop.table(table(village_id[Assignment != "unassigned" & Assignment != "doublet",c("Assignment", "Day_updated")]), margin = 2))
+
+village_summary_singlets_non$Assignment <- factor(village_summary_singlets$Assignment, levels = rev(village_summary_singlets[Day_updated == 15]$Assignment[order(village_summary_singlets[Day_updated == 15]$N)]))
+
+colnames(village_summary_singlets_non) <- gsub("Day_updated", "Day", colnames(village_summary_singlets_non))
+
+fwrite(village_summary_singlets_non, paste0(outdir, "cardiac_diff_prop_lines.tsv"), sep = "\t")
+fwrite(village_summary_singlets, paste0(outdir, "multi_passage_prop_lines.tsv"), sep = "\t")
+
+village_summary_singlets_non <- fread(paste0(outdir, "cardiac_diff_prop_lines.tsv"), sep = "\t")
+village_summary_singlets <- fread( paste0(outdir, "multi_passage_prop_lines.tsv"), sep = "\t")
+
+village_summary_combined <- rbind(village_summary_singlets_non[Day == 0], village_summary_singlets)
+village_summary_combined$Day <- gsub(0,-1,village_summary_combined$Day)
+
+
+p_stacked_area_filt_combined <- ggplot(village_summary_combined, aes(x = as.numeric(Day), y = N, fill = factor(Assignment, levels = names(colors)), group = factor(Assignment, levels = names(colors)))) +
+    geom_area(alpha=0.6 , size=0.1, colour="black") +
+    theme_classic() +
+    scale_fill_manual(values = colors) +
+    xlab("Passage") +
+    ylab("Proportion of Cells") +
+    theme(legend.position = "none")
+
+
+ggsave(p_stacked_area_filt_combined, filename = paste0(outdir,"stacked_area_filtered_w_cryo.png"), width = 4, height = 2)
+ggsave(p_stacked_area_filt_combined, filename = paste0(outdir,"stacked_area_filtered_w_cryo.pdf"), width = 4, height = 2)
+
+
+
+
+##### Make Number at each time plot #####
+village_summary_combined_n <- data.table(Day = unique(village_summary_combined$Day), N = as.numeric(NA))
+
+for (day in village_summary_combined_n$Day){
+    village_summary_combined_n[Day == day]$N <- nrow(village_summary_combined[Day == day & N > 0])
+}
+
+
+p_N_line <- ggplot(village_summary_combined_n, aes(x = as.numeric(as.character(Day)), y = N)) +
+    geom_point(colour="black", size = 0.8) +
+    geom_line() +
+    # geom_smooth(method = "lm", se = FALSE) +
+    theme_classic() +
+    xlab("Passage") +
+    ylab("# hiPSC\nLines") +
+    ylim(0,18)
+
+ggsave(p_N_line, filename = paste0(outdir,"line_N.png"), width = 4.4, height = 1.5)
+ggsave(p_N_line, filename = paste0(outdir,"line_N.pdf"), width = 4.4, height = 1.5)
+
+
+
+
 
 
 ### Add number of cells at each time into metadata and 1/n for models

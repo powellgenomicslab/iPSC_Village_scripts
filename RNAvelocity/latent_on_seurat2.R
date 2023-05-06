@@ -405,15 +405,29 @@ seurat_noNA@meta.data$Village <- gsub("Baseline", "Uni-Culture", seurat_noNA@met
 
 
 seurat_noNA@meta.data$Location_Individual <- paste0(seurat_noNA@meta.data$Location, "-", seurat_noNA@meta.data$Final_Assignment)
+seurat_noNA@meta.data$Location <- gsub("Site 3-Cryopreserved", "Site 3\nCryopreserved", seurat_noNA@meta.data$Location)
 
 
 pLocation_Time_latent <- ggplot(seurat_noNA@meta.data, aes(latent_time, fill = Village)) +
 	geom_density(alpha = 0.75) +
 	theme_classic() +
-	facet_grid(Location ~ Final_Assignment) +
-	scale_fill_manual(values = village_colors)
-ggsave(pLocation_Time_latent, filename = paste0(outdir,"faceted_histogram_latent.png"))
-ggsave(pLocation_Time_latent, filename = paste0(outdir,"faceted_histogram_latent.pdf"))
+	facet_grid(Location ~ Final_Assignment,scales = "free_y") +
+	scale_fill_manual(values = village_colors) +
+	scale_x_continuous(breaks=c(0,0.5,1))
+
+ggsave(pLocation_Time_latent, filename = paste0(outdir,"faceted_histogram_latent.png"), width = 4.5, height = 5)
+ggsave(pLocation_Time_latent, filename = paste0(outdir,"faceted_histogram_latent.pdf"), width = 4.5, height = 5)
+
+
+pLocation_Time_latent_bar <- ggplot(seurat_noNA@meta.data, aes(latent_time, fill = Village)) +
+	geom_histogram(alpha = 0.75, position="identity") +
+	theme_classic() +
+	facet_grid(Location ~ Final_Assignment,scales = "free_y") +
+	scale_fill_manual(values = village_colors) +
+	scale_x_continuous(breaks=c(0,0.5,1))
+
+ggsave(pLocation_Time_latent_bar, filename = paste0(outdir,"faceted_histogram_latent_bar.png"), width = 4.5, height = 5)
+ggsave(pLocation_Time_latent_bar, filename = paste0(outdir,"faceted_histogram_latent_bar.pdf"), width = 4.5, height = 5)
 
 
 
@@ -422,6 +436,17 @@ pLocation_Time_latent_line <- ggplot(seurat_noNA@meta.data, aes(latent_time, fil
 	theme_classic() +
 	facet_grid(vars(Final_Assignment)) +
 	scale_fill_manual(values = village_colors)
-ggsave(pLocation_Time_latent_line, filename = paste0(outdir,"faceted_histogram_latent_line.png"), width = 4, height = 3)
-ggsave(pLocation_Time_latent_line, filename = paste0(outdir,"faceted_histogram_latent_line.pdf"), width = 4, height = 3)
+
+ggsave(pLocation_Time_latent_line, filename = paste0(outdir,"faceted_histogram_latent_line.png"), width = 3, height = 3)
+ggsave(pLocation_Time_latent_line, filename = paste0(outdir,"faceted_histogram_latent_line.pdf"), width = 3, height = 3)
+
+
+pLocation_Time_latent_line_bar <- ggplot(seurat_noNA@meta.data, aes(latent_time, fill = Village)) +
+	geom_histogram(alpha = 0.75, position="identity") +
+	theme_classic() +
+	facet_grid(vars(Final_Assignment)) +
+	scale_fill_manual(values = village_colors)
+
+ggsave(pLocation_Time_latent_line_bar, filename = paste0(outdir,"faceted_histogram_latent_line_bar.png"), width = 3, height = 3)
+ggsave(pLocation_Time_latent_line_bar, filename = paste0(outdir,"faceted_histogram_latent_line_bar.pdf"), width = 3, height = 3)
 

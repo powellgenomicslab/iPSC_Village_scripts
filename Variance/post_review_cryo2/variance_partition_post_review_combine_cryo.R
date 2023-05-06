@@ -103,6 +103,34 @@ icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, lev
 
 
 
+var_explained_manuscript <- icc_interaction_plus_dt[,c("grp", "percent", "P", "gene")]
+
+colnames(var_explained_manuscript) <- c("Covariate", "Percent_Variance_Explained", "P", "ENSG")
+
+
+
+
+##### Add gene IDs for easy identification downstream #####
+GeneConversion1 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/DRENEA_1/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+GeneConversion2 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/Village_B_1_week/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+
+GeneConversion <- unique(rbind(GeneConversion1, GeneConversion2))
+GeneConversion <- GeneConversion[!duplicated(GeneConversion$X1),]
+GeneConversion$X3 <- NULL
+colnames(GeneConversion) <- c("ENSG", "Gene_ID")
+
+GeneConversion <- data.table(GeneConversion)
+
+
+### Add the gene IDs to the icc_dt ###
+
+var_explained_manuscript <- GeneConversion[var_explained_manuscript, on =c("ENSG")]
+
+fwrite(var_explained_manuscript, paste0(outdir, "cryopreserved_variance_explained_manuscript.tsv"), sep = "\t")
+
+
+
+
 ##### Check difference in percent explained with and without interactions #####
 icc_interaction_dt_joined <- icc_dt[icc_interaction_dt, on = c("grp", "gene")]
 
@@ -189,26 +217,28 @@ pRaincloud <- ggplot(icc_dt, aes(x = percent, y = factor(grp_size, levels = rev(
                 scale_y_discrete(expand = c(0.03, 0)) +
                 scale_fill_manual(values = var_colors)
 
-ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.png"), height = 8, width = 7)
-ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.pdf"), height = 8, width = 7)
+ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.png"), height = 4, width = 7)
+ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.pdf"), height = 4, width = 7)
 
 
 
 icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, levels = c("Line\nN = 9691", "Village\nN = 9297", "Cryopreserved\nN = 9137", "Replicate\nN = 2973", "Line:Village\nN = 3512", "Line:Cryopreserved\nN = 1680", "Village:Cryopreserved\nN = 2732", "Replicate:Village\nN = 646", "Replicate:Line\nN = 112", "Replicate:Cryopreserved\nN = 777", "Residual\nN = 10827"))
 
 pRaincloud_interaction <- ggplot(icc_interaction_plus_dt, aes(x = percent, y = grp_size, fill = factor(grp, levels = rev(vars)))) + 
-                geom_density_ridges(stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..), alpha = 0.75) +
-                geom_boxplot(size = 0.5,width = .15, outlier.size = 0.25, position = position_nudge(y=-0.12), alpha = 0.75) +
+                geom_density_ridges(size = 0.1,stat = "binline", bins = 100, scale = 0.7, draw_baseline = FALSE, aes(height =..ndensity..)) +
+                geom_point(size =1, position = position_nudge(y=-0.11), shape = "|", aes(color = factor(grp, levels = rev(vars)))) +
                 coord_cartesian(xlim = c(1.2, NA), clip = "off") +
                 theme_classic() +
                 theme(axis.title.y=element_blank()) +
                 xlab("Percent Variance Explained") +
                 scale_y_discrete(expand = c(0.03, 0)) +
-                scale_fill_manual(values = var_colors) +
-                geom_vline(xintercept = 1, linetype = "dashed", color = "red")
+                scale_fill_manual(values = var_colors, name = "Variable") +
+                scale_color_manual(values = var_colors, name = "Variable") +
+                geom_vline(xintercept = 1, lty="11", color = "grey50", size = 0.5)
 
-ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.png"), height = 8, width = 7)
-ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.pdf"), height = 8, width = 7)
+
+ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.png"), height = 4, width = 7)
+ggsave(pRaincloud_interaction, filename = paste0(outdir, "variance_explained_raincloud_interaction.pdf"), height = 4, width = 7)
 
 
 
@@ -497,10 +527,10 @@ ggsave(bar_proportions_rb, filename = paste0(outdir, "variance_explained_bar_rb_
 
 
 ### Plot Pluripotency Genes ###
-pluri_genes <- fread(paste0(dir,"data/pluripotency_genes.tsv"), sep = "\t", col.names = "Gene_ID", header = FALSE)
+pluri_genes <- fread(paste0(dir,"data/pluripotency_genes.tsv"), sep = "\t")
 
 
-pluri_genes <- GeneConversion[pluri_genes, on = "Gene_ID"]
+pluri_genes <- GeneConversion[pluri_genes, on = c("Gene_ID" = "GeneID")]
 
 
 icc_dt_pluri_genes <- icc_interaction_plus_dt[pluri_genes,on = c("gene")]
@@ -523,6 +553,25 @@ pPluri_Genes_Cont <- ggplot() +
 
 ggsave(pPluri_Genes_Cont, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions.png"), width = 6, height = 4.5)
 ggsave(pPluri_Genes_Cont, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions.pdf"), width = 6, height = 4.5)
+
+
+
+
+pPluri_Genes_Cont_top <- ggplot() +
+						geom_bar(data = icc_dt_pluri_genes[Gene_ID %in% c("MYC", "NANOG", "POU5F1", "SOX2")], aes(Gene_ID, percent, fill = grp), position = "stack", stat = "identity", alpha = 0.75) +
+						theme_classic() +
+						# facet_wrap(Gene_ID ~ ., nrow = 3) +
+						scale_fill_manual(values = var_colors) +
+						theme(plot.title = element_text(hjust = 0.5),
+                            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) +
+						ylab("Percent Gene Expression Variance Explained") +
+                        ggtitle("Variance of\nPluripotency Genes Explained") +
+						theme(axis.title.x=element_blank())
+
+ggsave(pPluri_Genes_Cont_top, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions_four.png"), width = 3.75, height = 4.5)
+ggsave(pPluri_Genes_Cont_top, filename = paste0(outdir, "Pluripotent_Gene_Variable_Contributions_four.pdf"), width = 3.75, height = 4.5)
+
+
 
 
 

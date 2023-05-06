@@ -60,6 +60,7 @@ colnames(df_hier_unscale)[1] <- "Expression"
 ##### Leave one out method #####
 variables <- c("Line", "Time")
 
+
 model_all <- as.formula(paste0("Expression ~ (1|", paste0(variables, collapse = ") + (1|"), ")"))
 
 
@@ -215,7 +216,7 @@ if (!length(variables) == 0){
                 })
             }
 
-            ### Deal with singular fits by removing last variable until a fit can be found - ordered in variables buy importance
+            ### Deal with singular fits by removing last variable until a fit can be found - ordered in variables by importance
             while (!model_glmmtmb_action$sdr$pdHess & length(action_variables) > 0 ){
                 print("Singular fit: removing last variable and rerunning with one less covariate.")
                 if (length(action_variables) > 1){
@@ -339,7 +340,7 @@ if (!length(variables) == 0){
                 saveRDS(residuals, paste0(resid_outdir, gene, "_residuals4qtl.rds"), compress = TRUE)
             }
         
-        } else {
+        } else if (length(variables) ==0) {
             icc <- data.table(grp=character(), vcov=numeric(), icc=numeric(), percent=numeric(), P=numeric(), gene=character())
             model_loo_updated <- list()
         }

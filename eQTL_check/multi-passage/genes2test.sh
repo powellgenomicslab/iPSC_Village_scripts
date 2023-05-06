@@ -13,7 +13,7 @@ awk '{print $2}' $kilpinen_genes | sort -u > $OUTDIR/kilpinen_genes.tsv
 awk '{print $2}' $deboever_genes | sort -u > $OUTDIR/deboever_genes.tsv
 
 
-comm -12 $OUTDIR/residual_genes.tsv head $OUTDIR/kilpinen_genes.tsv > $OUTDIR/genes_residual_and_kilpinen.tsv ## NONE
+# comm -12 $OUTDIR/residual_genes.tsv head $OUTDIR/kilpinen_genes.tsv > $OUTDIR/genes_residual_and_kilpinen.tsv ## NONE
 comm -12 $OUTDIR/residual_genes.tsv $OUTDIR/deboever_genes.tsv > $OUTDIR/genes_residual_and_deboever.tsv
 
 
@@ -23,8 +23,7 @@ grep -F -f $OUTDIR/genes_residual_and_deboever.tsv $deboever_genes > $OUTDIR/fin
 
 
 ### Filter vcf for just these snps ###
-awk '{print $1}' $OUTDIR/finalized_deboever_gene_snp_list.tsv | sort -u > $OUTDIR/finalized_deboever_snps.tsv
+awk '{print $1}' $OUTDIR/finalized_deboever_gene_snp_list.tsv | sort -u | sed 's/:/\t/g' | sed 's/$/\t/g' > $OUTDIR/finalized_deboever_snps.tsv
 
-grep "#" $OUTDIR/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes.vcf >$OUTDIR/deboever_finalized_snps.vcf
-grep -f $OUTDIR/finalized_deboever_snps.tsv $OUTDIR/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes.vcf >> $OUTDIR/deboever_finalized_snps.vcf
-
+grep "#" $OUTDIR/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes_hg19.vcf > $OUTDIR/deboever_finalized_snps.vcf
+grep -f $OUTDIR/finalized_deboever_snps.tsv $OUTDIR/nona_cardiac_multiome_Filtered_INFO_0.4_MAF0.05_complete_cases_snps_filtered_diff_genotypes_hg19.vcf >> $OUTDIR/deboever_finalized_snps.vcf

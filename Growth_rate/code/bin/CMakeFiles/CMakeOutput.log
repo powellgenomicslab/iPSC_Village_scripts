@@ -1,0 +1,627 @@
+The system is: Linux - 3.10.0-1127.el7.x86_64 - x86_64
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+Compiler: /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++ 
+Build flags: -fvisibility-inlines-hidden;-std=c++17;-fmessage-length=0;-march=nocona;-mtune=haswell;-ftree-vectorize;-fPIC;-fstack-protector-strong;-fno-plt;-O2;-ffunction-sections;-pipe;-isystem;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+
+The CXX compiler identification is GNU, found in "/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/3.10.3/CompilerIdCXX/a.out"
+
+Determining if the CXX compiler works passed with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_3898e/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_3898e.dir/build.make CMakeFiles/cmTC_3898e.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_3898e.dir/testCXXCompiler.cxx.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -o CMakeFiles/cmTC_3898e.dir/testCXXCompiler.cxx.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp/testCXXCompiler.cxx
+Linking CXX executable cmTC_3898e
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_3898e.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_3898e.dir/testCXXCompiler.cxx.o  -o cmTC_3898e 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+Detecting CXX compiler ABI info compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_a9b36/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_a9b36.dir/build.make CMakeFiles/cmTC_a9b36.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -o CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp
+Linking CXX executable cmTC_a9b36
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a9b36.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -v -rdynamic CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_a9b36 
+Reading specs from /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/specs
+COLLECT_GCC=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++
+COLLECT_LTO_WRAPPER=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper
+Target: x86_64-conda_cos6-linux-gnu
+Configured with: /home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/src/gcc/configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=x86_64-conda_cos6-linux-gnu --prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built --with-sysroot=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-languages=c,c++,fortran,objc,obj-c++ --with-pkgversion='crosstool-NG 1.23.0.449-a04d0' --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --disable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --enable-libmpx --with-gmp=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpfr=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpc=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-isl=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-target-optspace --enable-plugin --enable-gold --disable-nls --disable-multilib --with-local-prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-long-long --enable-default-pie
+Thread model: posix
+gcc version 7.3.0 (crosstool-NG 1.23.0.449-a04d0) 
+COMPILER_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/bin/
+LIBRARY_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/
+COLLECT_GCC_OPTIONS='-fvisibility-inlines-hidden' '-std=c++1z' '-fmessage-length=0' '-march=nocona' '-mtune=haswell' '-ftree-vectorize' '-fPIC' '-fstack-protector-strong' '-fno-plt' '-O2' '-ffunction-sections' '-pipe' '-isystem' '/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib' '-v' '-rdynamic' '-o' 'cmTC_a9b36' '-shared-libgcc'
+ /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/collect2 -plugin /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/liblto_plugin.so -plugin-opt=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccgwBzK7.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_a9b36 /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/Scrt1.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crti.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtbeginS.o -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0 -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib -rpath /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtendS.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crtn.o
+COLLECT_GCC_OPTIONS='-fvisibility-inlines-hidden' '-std=c++1z' '-fmessage-length=0' '-march=nocona' '-mtune=haswell' '-ftree-vectorize' '-fPIC' '-fstack-protector-strong' '-fno-plt' '-O2' '-ffunction-sections' '-pipe' '-isystem' '/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib' '-v' '-rdynamic' '-o' 'cmTC_a9b36' '-shared-libgcc'
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+Parsed CXX implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_a9b36/fast"]
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_a9b36.dir/build.make CMakeFiles/cmTC_a9b36.dir/build]
+  ignore line: [gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp']
+  ignore line: [Building CXX object CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o]
+  ignore line: [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -o CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/share/cmake-3.10/Modules/CMakeCXXCompilerABI.cpp]
+  ignore line: [Linking CXX executable cmTC_a9b36]
+  ignore line: [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a9b36.dir/link.txt --verbose=1]
+  ignore line: [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -v -rdynamic CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o  -o cmTC_a9b36 ]
+  ignore line: [Reading specs from /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/specs]
+  ignore line: [COLLECT_GCC=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++]
+  ignore line: [COLLECT_LTO_WRAPPER=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper]
+  ignore line: [Target: x86_64-conda_cos6-linux-gnu]
+  ignore line: [Configured with: /home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/src/gcc/configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=x86_64-conda_cos6-linux-gnu --prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built --with-sysroot=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-languages=c,c++,fortran,objc,obj-c++ --with-pkgversion='crosstool-NG 1.23.0.449-a04d0' --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --disable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --enable-libmpx --with-gmp=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpfr=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpc=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-isl=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-target-optspace --enable-plugin --enable-gold --disable-nls --disable-multilib --with-local-prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-long-long --enable-default-pie]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.3.0 (crosstool-NG 1.23.0.449-a04d0) ]
+  ignore line: [COMPILER_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/bin/]
+  ignore line: [LIBRARY_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-fvisibility-inlines-hidden' '-std=c++1z' '-fmessage-length=0' '-march=nocona' '-mtune=haswell' '-ftree-vectorize' '-fPIC' '-fstack-protector-strong' '-fno-plt' '-O2' '-ffunction-sections' '-pipe' '-isystem' '/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib' '-v' '-rdynamic' '-o' 'cmTC_a9b36' '-shared-libgcc']
+  link line: [ /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/collect2 -plugin /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/liblto_plugin.so -plugin-opt=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccgwBzK7.res -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lgcc --sysroot=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_a9b36 /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/Scrt1.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crti.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtbeginS.o -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0 -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib -rpath /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o -lstdc++ -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtendS.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crtn.o]
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccgwBzK7.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [--sysroot=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_a9b36] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/Scrt1.o] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crti.o] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtbeginS.o] ==> ignore
+    arg [-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib] ==> dir [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib]
+    arg [-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib] ==> dir [/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+    arg [-rpath] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib] ==> ignore
+    arg [CMakeFiles/cmTC_a9b36.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+    arg [-lstdc++] ==> lib [stdc++]
+    arg [-lm] ==> lib [m]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [-lc] ==> lib [c]
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [-lgcc] ==> lib [gcc]
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtendS.o] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crtn.o] ==> ignore
+  collapse library dir [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib] ==> [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib]
+  collapse library dir [/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib] ==> [/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+  implicit libs: [stdc++;m;gcc_s;gcc;c;gcc_s;gcc]
+  implicit dirs: [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib;/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/lib;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/lib;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+  implicit fwks: []
+
+
+
+
+Detecting CXX [-std=c++1z] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_dd626/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_dd626.dir/build.make CMakeFiles/cmTC_dd626.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_dd626.dir/feature_tests.cxx.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -std=c++1z -o CMakeFiles/cmTC_dd626.dir/feature_tests.cxx.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_dd626
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dd626.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_dd626.dir/feature_tests.cxx.o  -o cmTC_dd626 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++14] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_7c7f8/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_7c7f8.dir/build.make CMakeFiles/cmTC_7c7f8.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_7c7f8.dir/feature_tests.cxx.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -std=c++14 -o CMakeFiles/cmTC_7c7f8.dir/feature_tests.cxx.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_7c7f8
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_7c7f8.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_7c7f8.dir/feature_tests.cxx.o  -o cmTC_7c7f8 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:1cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:1cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:1cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:1cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:1cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:1cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:1cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:1cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:1cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:1cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:1cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++11] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_74f42/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_74f42.dir/build.make CMakeFiles/cmTC_74f42.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_74f42.dir/feature_tests.cxx.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -std=c++11 -o CMakeFiles/cmTC_74f42.dir/feature_tests.cxx.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_74f42
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_74f42.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_74f42.dir/feature_tests.cxx.o  -o cmTC_74f42 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:1cxx_alias_templates
+    Feature record: CXX_FEATURE:1cxx_alignas
+    Feature record: CXX_FEATURE:1cxx_alignof
+    Feature record: CXX_FEATURE:1cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:1cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:1cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:1cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:1cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:1cxx_default_function_template_args
+    Feature record: CXX_FEATURE:1cxx_defaulted_functions
+    Feature record: CXX_FEATURE:1cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:1cxx_delegating_constructors
+    Feature record: CXX_FEATURE:1cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:1cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:1cxx_explicit_conversions
+    Feature record: CXX_FEATURE:1cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:1cxx_extern_templates
+    Feature record: CXX_FEATURE:1cxx_final
+    Feature record: CXX_FEATURE:1cxx_func_identifier
+    Feature record: CXX_FEATURE:1cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:1cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:1cxx_inline_namespaces
+    Feature record: CXX_FEATURE:1cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:1cxx_local_type_template_args
+    Feature record: CXX_FEATURE:1cxx_long_long_type
+    Feature record: CXX_FEATURE:1cxx_noexcept
+    Feature record: CXX_FEATURE:1cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:1cxx_nullptr
+    Feature record: CXX_FEATURE:1cxx_override
+    Feature record: CXX_FEATURE:1cxx_range_for
+    Feature record: CXX_FEATURE:1cxx_raw_string_literals
+    Feature record: CXX_FEATURE:1cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:1cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:1cxx_rvalue_references
+    Feature record: CXX_FEATURE:1cxx_sizeof_member
+    Feature record: CXX_FEATURE:1cxx_static_assert
+    Feature record: CXX_FEATURE:1cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:1cxx_thread_local
+    Feature record: CXX_FEATURE:1cxx_trailing_return_types
+    Feature record: CXX_FEATURE:1cxx_unicode_literals
+    Feature record: CXX_FEATURE:1cxx_uniform_initialization
+    Feature record: CXX_FEATURE:1cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:1cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:1cxx_variadic_macros
+    Feature record: CXX_FEATURE:1cxx_variadic_templates
+
+
+Detecting CXX [-std=c++98] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_a86ad/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_a86ad.dir/build.make CMakeFiles/cmTC_a86ad.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_a86ad.dir/feature_tests.cxx.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++    -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include    -std=c++98 -o CMakeFiles/cmTC_a86ad.dir/feature_tests.cxx.o -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.cxx
+Linking CXX executable cmTC_a86ad
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a86ad.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-c++  -fvisibility-inlines-hidden -std=c++17 -fmessage-length=0 -march=nocona -mtune=haswell -ftree-vectorize -fPIC -fstack-protector-strong -fno-plt -O2 -ffunction-sections -pipe -isystem /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_a86ad.dir/feature_tests.cxx.o  -o cmTC_a86ad 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: CXX_FEATURE:0cxx_aggregate_default_initializers
+    Feature record: CXX_FEATURE:0cxx_alias_templates
+    Feature record: CXX_FEATURE:0cxx_alignas
+    Feature record: CXX_FEATURE:0cxx_alignof
+    Feature record: CXX_FEATURE:0cxx_attributes
+    Feature record: CXX_FEATURE:0cxx_attribute_deprecated
+    Feature record: CXX_FEATURE:0cxx_auto_type
+    Feature record: CXX_FEATURE:0cxx_binary_literals
+    Feature record: CXX_FEATURE:0cxx_constexpr
+    Feature record: CXX_FEATURE:0cxx_contextual_conversions
+    Feature record: CXX_FEATURE:0cxx_decltype
+    Feature record: CXX_FEATURE:0cxx_decltype_auto
+    Feature record: CXX_FEATURE:0cxx_decltype_incomplete_return_types
+    Feature record: CXX_FEATURE:0cxx_default_function_template_args
+    Feature record: CXX_FEATURE:0cxx_defaulted_functions
+    Feature record: CXX_FEATURE:0cxx_defaulted_move_initializers
+    Feature record: CXX_FEATURE:0cxx_delegating_constructors
+    Feature record: CXX_FEATURE:0cxx_deleted_functions
+    Feature record: CXX_FEATURE:0cxx_digit_separators
+    Feature record: CXX_FEATURE:0cxx_enum_forward_declarations
+    Feature record: CXX_FEATURE:0cxx_explicit_conversions
+    Feature record: CXX_FEATURE:0cxx_extended_friend_declarations
+    Feature record: CXX_FEATURE:0cxx_extern_templates
+    Feature record: CXX_FEATURE:0cxx_final
+    Feature record: CXX_FEATURE:0cxx_func_identifier
+    Feature record: CXX_FEATURE:0cxx_generalized_initializers
+    Feature record: CXX_FEATURE:0cxx_generic_lambdas
+    Feature record: CXX_FEATURE:0cxx_inheriting_constructors
+    Feature record: CXX_FEATURE:0cxx_inline_namespaces
+    Feature record: CXX_FEATURE:0cxx_lambdas
+    Feature record: CXX_FEATURE:0cxx_lambda_init_captures
+    Feature record: CXX_FEATURE:0cxx_local_type_template_args
+    Feature record: CXX_FEATURE:0cxx_long_long_type
+    Feature record: CXX_FEATURE:0cxx_noexcept
+    Feature record: CXX_FEATURE:0cxx_nonstatic_member_init
+    Feature record: CXX_FEATURE:0cxx_nullptr
+    Feature record: CXX_FEATURE:0cxx_override
+    Feature record: CXX_FEATURE:0cxx_range_for
+    Feature record: CXX_FEATURE:0cxx_raw_string_literals
+    Feature record: CXX_FEATURE:0cxx_reference_qualified_functions
+    Feature record: CXX_FEATURE:0cxx_relaxed_constexpr
+    Feature record: CXX_FEATURE:0cxx_return_type_deduction
+    Feature record: CXX_FEATURE:0cxx_right_angle_brackets
+    Feature record: CXX_FEATURE:0cxx_rvalue_references
+    Feature record: CXX_FEATURE:0cxx_sizeof_member
+    Feature record: CXX_FEATURE:0cxx_static_assert
+    Feature record: CXX_FEATURE:0cxx_strong_enums
+    Feature record: CXX_FEATURE:1cxx_template_template_parameters
+    Feature record: CXX_FEATURE:0cxx_thread_local
+    Feature record: CXX_FEATURE:0cxx_trailing_return_types
+    Feature record: CXX_FEATURE:0cxx_unicode_literals
+    Feature record: CXX_FEATURE:0cxx_uniform_initialization
+    Feature record: CXX_FEATURE:0cxx_unrestricted_unions
+    Feature record: CXX_FEATURE:0cxx_user_literals
+    Feature record: CXX_FEATURE:0cxx_variable_templates
+    Feature record: CXX_FEATURE:0cxx_variadic_macros
+    Feature record: CXX_FEATURE:0cxx_variadic_templates
+Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+Compiler: /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc 
+Build flags: -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include;-I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include
+Id flags:  
+
+The output was:
+0
+
+
+Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+
+The C compiler identification is GNU, found in "/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/3.10.3/CompilerIdC/a.out"
+
+Determining if the C compiler works passed with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_304fc/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_304fc.dir/build.make CMakeFiles/cmTC_304fc.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_304fc.dir/testCCompiler.c.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc   -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include    -o CMakeFiles/cmTC_304fc.dir/testCCompiler.c.o   -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp/testCCompiler.c
+Linking C executable cmTC_304fc
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_304fc.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_304fc.dir/testCCompiler.c.o  -o cmTC_304fc 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+Detecting C compiler ABI info compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_837e6/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_837e6.dir/build.make CMakeFiles/cmTC_837e6.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc   -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include    -o CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o   -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/share/cmake-3.10/Modules/CMakeCCompilerABI.c
+Linking C executable cmTC_837e6
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_837e6.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -v -rdynamic CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o  -o cmTC_837e6 
+Reading specs from /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/specs
+COLLECT_GCC=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc
+COLLECT_LTO_WRAPPER=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper
+Target: x86_64-conda_cos6-linux-gnu
+Configured with: /home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/src/gcc/configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=x86_64-conda_cos6-linux-gnu --prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built --with-sysroot=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-languages=c,c++,fortran,objc,obj-c++ --with-pkgversion='crosstool-NG 1.23.0.449-a04d0' --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --disable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --enable-libmpx --with-gmp=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpfr=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpc=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-isl=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-target-optspace --enable-plugin --enable-gold --disable-nls --disable-multilib --with-local-prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-long-long --enable-default-pie
+Thread model: posix
+gcc version 7.3.0 (crosstool-NG 1.23.0.449-a04d0) 
+COMPILER_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/bin/
+LIBRARY_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/
+COLLECT_GCC_OPTIONS='-I' '/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include' '-I' '/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib' '-v' '-rdynamic' '-o' 'cmTC_837e6' '-mtune=generic' '-march=x86-64'
+ /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/collect2 -plugin /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/liblto_plugin.so -plugin-opt=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQCdd93.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_837e6 /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/Scrt1.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crti.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtbeginS.o -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0 -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib -rpath /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtendS.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crtn.o
+COLLECT_GCC_OPTIONS='-I' '/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include' '-I' '/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib' '-v' '-rdynamic' '-o' 'cmTC_837e6' '-mtune=generic' '-march=x86-64'
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+Parsed C implicit link information from above output:
+  link line regex: [^( *|.*[/\])(ld|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\]+-)?ld|collect2)[^/\]*( |$)]
+  ignore line: [Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp]
+  ignore line: []
+  ignore line: [Run Build Command:"/usr/bin/gmake" "cmTC_837e6/fast"]
+  ignore line: [/usr/bin/gmake -f CMakeFiles/cmTC_837e6.dir/build.make CMakeFiles/cmTC_837e6.dir/build]
+  ignore line: [gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp']
+  ignore line: [Building C object CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o]
+  ignore line: [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc   -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include    -o CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o   -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/share/cmake-3.10/Modules/CMakeCCompilerABI.c]
+  ignore line: [Linking C executable cmTC_837e6]
+  ignore line: [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_837e6.dir/link.txt --verbose=1]
+  ignore line: [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -v -rdynamic CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o  -o cmTC_837e6 ]
+  ignore line: [Reading specs from /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/specs]
+  ignore line: [COLLECT_GCC=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc]
+  ignore line: [COLLECT_LTO_WRAPPER=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper]
+  ignore line: [Target: x86_64-conda_cos6-linux-gnu]
+  ignore line: [Configured with: /home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/src/gcc/configure --build=x86_64-build_pc-linux-gnu --host=x86_64-build_pc-linux-gnu --target=x86_64-conda_cos6-linux-gnu --prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built --with-sysroot=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-languages=c,c++,fortran,objc,obj-c++ --with-pkgversion='crosstool-NG 1.23.0.449-a04d0' --enable-__cxa_atexit --disable-libmudflap --enable-libgomp --disable-libssp --enable-libquadmath --enable-libquadmath-support --enable-libsanitizer --enable-libmpx --with-gmp=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpfr=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-mpc=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --with-isl=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/.build/x86_64-conda_cos6-linux-gnu/buildtools --enable-lto --enable-threads=posix --enable-target-optspace --enable-plugin --enable-gold --disable-nls --disable-multilib --with-local-prefix=/home/rdonnelly/mc/conda-bld/compilers_linux-64_1534865402226/work/gcc_built/x86_64-conda_cos6-linux-gnu/sysroot --enable-long-long --enable-default-pie]
+  ignore line: [Thread model: posix]
+  ignore line: [gcc version 7.3.0 (crosstool-NG 1.23.0.449-a04d0) ]
+  ignore line: [COMPILER_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/bin/]
+  ignore line: [LIBRARY_PATH=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/:/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/]
+  ignore line: [COLLECT_GCC_OPTIONS='-I' '/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include' '-I' '/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib' '-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib' '-v' '-rdynamic' '-o' 'cmTC_837e6' '-mtune=generic' '-march=x86-64']
+  link line: [ /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/collect2 -plugin /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/liblto_plugin.so -plugin-opt=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper -plugin-opt=-fresolution=/tmp/ccQCdd93.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --sysroot=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot --eh-frame-hdr -m elf_x86_64 -export-dynamic -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -o cmTC_837e6 /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/Scrt1.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crti.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtbeginS.o -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0 -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib -L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib -rpath /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtendS.o /directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crtn.o]
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/collect2] ==> ignore
+    arg [-plugin] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/liblto_plugin.so] ==> ignore
+    arg [-plugin-opt=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../libexec/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/lto-wrapper] ==> ignore
+    arg [-plugin-opt=-fresolution=/tmp/ccQCdd93.res] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [-plugin-opt=-pass-through=-lc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+    arg [-plugin-opt=-pass-through=-lgcc_s] ==> ignore
+    arg [--sysroot=/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot] ==> ignore
+    arg [--eh-frame-hdr] ==> ignore
+    arg [-m] ==> ignore
+    arg [elf_x86_64] ==> ignore
+    arg [-export-dynamic] ==> ignore
+    arg [-dynamic-linker] ==> ignore
+    arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+    arg [-pie] ==> ignore
+    arg [-o] ==> ignore
+    arg [cmTC_837e6] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/Scrt1.o] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crti.o] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtbeginS.o] ==> ignore
+    arg [-L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib] ==> dir [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib]
+    arg [-L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib] ==> dir [/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib]
+    arg [-L/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib] ==> dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+    arg [-rpath] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib] ==> ignore
+    arg [CMakeFiles/cmTC_837e6.dir/CMakeCCompilerABI.c.o] ==> ignore
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [-lc] ==> lib [c]
+    arg [-lgcc] ==> lib [gcc]
+    arg [--as-needed] ==> ignore
+    arg [-lgcc_s] ==> lib [gcc_s]
+    arg [--no-as-needed] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/crtendS.o] ==> ignore
+    arg [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib/crtn.o] ==> ignore
+  collapse library dir [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib] ==> [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib]
+  collapse library dir [/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib] ==> [/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib/../lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib/../lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib/../lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0/../../../../x86_64-conda_cos6-linux-gnu/lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/lib]
+  collapse library dir [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/../x86_64-conda_cos6-linux-gnu/sysroot/usr/lib] ==> [/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+  implicit libs: [gcc;gcc_s;c;gcc;gcc_s]
+  implicit dirs: [/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib;/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc/x86_64-conda_cos6-linux-gnu/7.3.0;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/lib/gcc;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/lib;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/lib;/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/x86_64-conda_cos6-linux-gnu/sysroot/usr/lib]
+  implicit fwks: []
+
+
+
+
+Detecting C [-std=c11] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_e9082/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_e9082.dir/build.make CMakeFiles/cmTC_e9082.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_e9082.dir/feature_tests.c.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc   -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include    -std=c11 -o CMakeFiles/cmTC_e9082.dir/feature_tests.c.o   -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.c
+Linking C executable cmTC_e9082
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e9082.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_e9082.dir/feature_tests.c.o  -o cmTC_e9082 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:1c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c99] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_142a6/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_142a6.dir/build.make CMakeFiles/cmTC_142a6.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_142a6.dir/feature_tests.c.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc   -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include    -std=c99 -o CMakeFiles/cmTC_142a6.dir/feature_tests.c.o   -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.c
+Linking C executable cmTC_142a6
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_142a6.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_142a6.dir/feature_tests.c.o  -o cmTC_142a6 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:1c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:1c_variadic_macros
+
+
+Detecting C [-std=c90] compiler features compiled with the following output:
+Change Dir: /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/gmake" "cmTC_28564/fast"
+/usr/bin/gmake -f CMakeFiles/cmTC_28564.dir/build.make CMakeFiles/cmTC_28564.dir/build
+gmake[1]: Entering directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_28564.dir/feature_tests.c.o
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc   -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include    -std=c90 -o CMakeFiles/cmTC_28564.dir/feature_tests.c.o   -c /directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/feature_tests.c
+Linking C executable cmTC_28564
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/cmake -E cmake_link_script CMakeFiles/cmTC_28564.dir/link.txt --verbose=1
+/directflow/SCCGGroupShare/projects/DrewNeavin/software/anaconda3/envs/ratrack/bin/x86_64-conda_cos6-linux-gnu-gcc -I/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/include -I/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/include   -L/share/ClusterShare/software/contrib/sccg/centos7/build/bzip2/bzip2-1.0.8/lib -L/share/ClusterShare/software/contrib/sccg/centos7/build/zlib/zlib-1.2.11/lib  -rdynamic CMakeFiles/cmTC_28564.dir/feature_tests.c.o  -o cmTC_28564 
+gmake[1]: Leaving directory `/directflow/SCCGGroupShare/projects/DrewNeavin/software/ratrack/code/bin/CMakeFiles/CMakeTmp'
+
+
+    Feature record: C_FEATURE:1c_function_prototypes
+    Feature record: C_FEATURE:0c_restrict
+    Feature record: C_FEATURE:0c_static_assert
+    Feature record: C_FEATURE:0c_variadic_macros

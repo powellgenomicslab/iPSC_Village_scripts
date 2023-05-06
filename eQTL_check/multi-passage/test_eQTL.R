@@ -94,7 +94,8 @@ colnames(snp_dt) <- gsub("^0_", "", colnames(snp_dt)) %>%
 
     
 ## Get specific SNP ##
-snp_dt$ID <- paste0(vcf@fix[,'CHROM'],":", vcf@fix[,'POS'],":", vcf@fix[,'REF'],":", vcf@fix[,'ALT'])
+# snp_dt$ID <- paste0(vcf@fix[,'CHROM'],":", vcf@fix[,'POS'],":", vcf@fix[,'REF'],":", vcf@fix[,'ALT'])
+snp_dt$ID <- vcf@fix[,'ID']
 
 snp_dt_subset <- snp_dt[ID %in% snp_gene_pairs_subset$ID]
 

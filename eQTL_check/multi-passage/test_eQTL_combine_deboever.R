@@ -15,7 +15,7 @@ dir.create(outdir, recursive = TRUE)
 files <- list.files(indir)
 
 bed_results_list <- lapply(files, function(x){
-    fread(paste0(indir, x), sep = "\t")
+    fread(paste0(indir, x), sep = "\t", header = TRUE)
 })
 
 
@@ -37,6 +37,8 @@ results_dt$significant <- ifelse(results_dt$fdr < 0.05, TRUE, FALSE)
 
 
 results_dt$direction <- factor(results_dt$direction, levels = c("opposite","match"))
+
+fwrite(results_dt, paste0(outdir,"deboever_comparison_multipassage.tsv"), "\t")
 
 
 correlation_plot <- ggplot(results_dt, aes(beta_deboever, dataset_beta, color = log(fdr))) +
@@ -105,8 +107,8 @@ correlation_plot <- ggplot(results_dt, aes(updated_beta, dataset_beta, color = d
         xlab("DeBoever Effect Size") +
         scale_color_manual(values = c("grey60", "black"), name = "Effect\nDirections") +
         stat_quadrant_counts() +
-        xlim(-2.25,2.25) +
-        ylim(-8.5,8.5) +
+        xlim(-2,2) +
+        ylim(-2.5,2.5) +
         theme(legend.position = "none")
 
 ggsave(correlation_plot, filename = paste0(outdir, "correlation_plot_DeBoever.png"), height = 2.5, width = 2.5)

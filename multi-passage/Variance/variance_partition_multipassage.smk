@@ -11,6 +11,7 @@ rule all:
         # expand("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance/gene_separated/fit_models/{gene}_fitted_models.rds", gene = genes.Gene),
         # expand("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_ncov/gene_separated/fit_models/{gene}_fitted_models.rds", gene = genes.Gene),
         expand("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/gene_separated/fit_models/{gene}_fitted_models.rds", gene = genes.Gene),
+        expand("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/gene_separated/icc/{gene}_icc.rds", gene = genes.Gene),
 
 
 rule partition_variance:
@@ -73,7 +74,7 @@ rule partition_variance_ncov:
 ### Tried manually with just CHCHD2 and the Ncov impacts the ability to get the line effect so cannot run this way (could downsample some of the pools to be more even sizes)
 rule partition_variance_integratedSCT:
     input:
-        seurat =  ancient("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/preQC/time-integrated_filtered_seurat_1pct_expressing.rds")
+        seurat =  "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/preQC/time-integrated_filtered_seurat_1pct_expressing.rds"
     output:
         "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/gene_separated/icc/{gene}_icc.rds",
         "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/multi-passage/Variance/variance_integratedSCT/gene_separated/fit_models/{gene}_fitted_models.rds"

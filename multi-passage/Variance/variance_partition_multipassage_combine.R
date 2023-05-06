@@ -39,7 +39,7 @@ var_colors <- var_colors[selected_vars]
 
 
 ##### Get list of icc files #####
-icc_files <- list.files(icc_dir)
+icc_files <- list.files(icc_dir, pattern= ".rds")
 # icc_files2 <- list.files(icc_dir2)
 
 
@@ -158,6 +158,36 @@ icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, lev
 
 
 
+
+var_explained_manuscript <- icc_interaction_plus_dt[,c("grp", "percent", "P", "gene")]
+
+colnames(var_explained_manuscript) <- c("Covariate", "Percent_Variance_Explained", "P", "ENSG")
+
+
+
+##### Add gene IDs for easy identification downstream #####
+GeneConversion1 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/DRENEA_1/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+GeneConversion2 <- read_delim("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/data/Expression_200128_A00152_0196_BH3HNFDSXY/GE/Village_B_1_week/outs/filtered_feature_bc_matrix/features.tsv.gz", col_names = F, delim = "\t")
+
+GeneConversion <- unique(rbind(GeneConversion1, GeneConversion2))
+GeneConversion <- GeneConversion[!duplicated(GeneConversion$X1),]
+GeneConversion$X3 <- NULL
+colnames(GeneConversion) <- c("ENSG", "Gene_ID")
+
+GeneConversion <- data.table(GeneConversion)
+
+
+### Add the gene IDs to the icc_dt ###
+
+var_explained_manuscript <- GeneConversion[var_explained_manuscript, on =c("ENSG")]
+
+fwrite(var_explained_manuscript, paste0(outdir, "multi-passage_variance_explained_manuscript.tsv"), sep = "\t")
+
+
+
+
+
+
 ##### Check difference in percent explained with and without interactions #####
 icc_interaction_dt_joined <- icc_dt[icc_interaction_dt, on = c("grp", "gene")]
 
@@ -266,7 +296,7 @@ ggsave(pRaincloud, filename = paste0(outdir, "variance_explained_raincloud.pdf")
 
 
 
-icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, levels = c("Line\nN = 750", "Passage\nN = 750", "Line:Passage\nN = 619", "Residual\nN = 750"))
+icc_interaction_plus_dt$grp_size <- factor(icc_interaction_plus_dt$grp_size, levels = c("Line\nN = 12076", "Passage\nN = 3620", "Line:Passage\nN = 2033", "Residual\nN = 12076"))
 
 
 # pRaincloud_interaction <- ggplot(icc_interaction_plus_dt, aes(x = percent, y = grp_size,  fill = factor(grp, levels = rev(vars)))) + 
@@ -316,7 +346,17 @@ group_size$grp_size <- paste0(group_size$grp, "\nN = ", group_size$size)
 icc_interaction_sig_dt <- group_size[icc_interaction_sig_dt, on = "grp"]
 icc_interaction_sig_dt$grp_size <- factor(icc_interaction_sig_dt$grp_size, levels = unique(group_size$grp_size))
 
-grp_size_order <- c("Line\nN = 750", "Passage\nN = 750", "Line:Passage\nN = 619", "Residual\nN = 750")
+grp_size_order <- c("Line\nN = 12076", "Passage\nN = 3620", "Line:Passage\nN = 2033", "Residual\nN = 12076")
+
+mean(icc_interaction_sig_dt[grp == "Line"]$percent)
+mean(icc_interaction_sig_dt[grp == "Passage"]$percent)
+mean(icc_interaction_sig_dt[grp == "Line:Passage"]$percent)
+
+
+
+mean(icc_interaction_sig_dt[grp == "Line" & percent > 1]$percent)
+mean(icc_interaction_sig_dt[grp == "Passage" & percent > 1]$percent)
+mean(icc_interaction_sig_dt[grp == "Line:Passage" & percent > 1]$percent)
 
 
 

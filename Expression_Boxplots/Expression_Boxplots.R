@@ -8,7 +8,9 @@ library(glmmTMB)
 library(ggnewscale)
 library(MASS)
 library(ggpubr)
-
+library(vcfR)
+library(facefuns)
+library(facetscales)
 
 
 dir <- "/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/"
@@ -148,19 +150,47 @@ save_figs(pCHCHD2_counts_village, paste0(outdir,"CHCHD2/counts_effect"), width =
 
 
 ##### CHCHD2 eQTL Fig #####
-CHCHD2 <- expression_df(seurat_list, "ENSG00000106153", c("Location", "Time", "Final_Assignment", "Site_rep"))
+vcf <- read.vcfR("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/eQTL_check/KilpinenOverlap/deboever_finalized_snps.recode.vcf")
+
+genos <- data.table(as_tibble(extract.gt(element = "DS",vcf, IDtoRowNames = F)))
+genos$ID <- paste0(vcf@fix[,"ID"], "_", vcf@fix[,"REF"], "_", vcf@fix[,"ALT"])
+genos$REF <- vcf@fix[,"REF"]
+genos$ALT <- vcf@fix[,"ALT"]
+
+
+CHCHD2_geno <- genos[ID == "7:56174115_A_C"]
+
+CHCHD2_geno$FSA0006 <- ifelse(CHCHD2_geno$`22_FSA` > 1.5, paste0(CHCHD2_geno$ALT, "/", CHCHD2_geno$ALT),
+							ifelse(CHCHD2_geno$`22_FSA` < 0.5, paste0(CHCHD2_geno$REF, "/", CHCHD2_geno$REF), paste0(CHCHD2_geno$REF, "/", CHCHD2_geno$ALT)))
+
+CHCHD2_geno$MBE1006 <- ifelse(CHCHD2_geno$`29_MBE` > 1.5, paste0(CHCHD2_geno$ALT, "/", CHCHD2_geno$ALT),
+							ifelse(CHCHD2_geno$`29_MBE` < 0.5, paste0(CHCHD2_geno$REF, "/", CHCHD2_geno$REF), paste0(CHCHD2_geno$REF, "/", CHCHD2_geno$ALT)))
+
+CHCHD2_geno$TOB0421 <- ifelse(CHCHD2_geno$`36_TOB00421_i_E8` > 1.5, paste0(CHCHD2_geno$ALT, "/", CHCHD2_geno$ALT),
+							ifelse(CHCHD2_geno$`36_TOB00421_i_E8` < 0.5, paste0(CHCHD2_geno$REF, "/", CHCHD2_geno$REF), paste0(CHCHD2_geno$REF, "/", CHCHD2_geno$ALT)))
+
+
+
+CHCHD2 <- data.table(expression_df(seurat_list, "ENSG00000106153", c("Location", "Time", "Final_Assignment", "Site_rep")))
 ### 7:56049019 SNP genotype (genotyped SNP in LD block)
-CHCHD2_geno <- data.frame("Final_Assignment" = c("FSA0006", "MBE1006", "TOB0421"), "Genotype" = c("A/A", "A/A", "A/G"))
-CHCHD2 <- left_join(CHCHD2, CHCHD2_geno)
-CHCHD2 <- data.table(CHCHD2)
+CHCHD2_geno_long <- melt(CHCHD2_geno[,c("FSA0006", "TOB0421", "MBE1006")], measure.vars = c("FSA0006", "TOB0421", "MBE1006"))
+colnames(CHCHD2_geno_long) <- c("Final_Assignment", "Genotype")
+
+
+CHCHD2 <- CHCHD2[CHCHD2_geno_long, on = c("Final_Assignment")]
+
 
 CHCHD2_means <- CHCHD2[,.(Mean=mean(Counts)),.(Final_Assignment, Genotype, Time, Site_rep, Location)]
-CHCHD2_means$Genotype_Numeric <- ifelse(CHCHD2_means$Genotype == "A/A", 0, 1)
+CHCHD2_means$Genotype_Numeric <- ifelse(CHCHD2_means$Genotype == "C/C", 2, 1)
 
 CHCHD2_means_norm <- CHCHD2[,.(Mean=mean(Normalized)),.(Final_Assignment, Genotype, Time, Site_rep, Location)]
-CHCHD2_means_norm$Genotype_Numeric <- ifelse(CHCHD2_means$Genotype == "A/A", 0, 1)
+CHCHD2_means_norm$Genotype_Numeric <- ifelse(CHCHD2_means$Genotype == "C/C", 2, 1)
+
+fwrite(CHCHD2_means_norm, paste0(outdir,"CHCHD2_average_norm_counts.tsv"), sep = "\t")
 
 dir.create(paste0(outdir,"CHCHD2"))
+
+
 
 ### Calculate t test significance ###
 t_test_df <- unique(data.table(Location = CHCHD2$Location, Time = CHCHD2$Time))
@@ -192,8 +222,8 @@ pCHCHD2_counts_eQTL <- ggplot(CHCHD2[which(CHCHD2$Location != "Site 3_Cryopreser
 					theme_classic() +
 					facet_grid(Location ~ Time) +
 					ylab("CHCHD2 Counts")+
-					xlab("rs2304376 Genotype") +
-					geom_signif(comparisons = list(c("A/A", "A/G")), 
+					xlab("rs10043 Genotype") +
+					geom_signif(comparisons = list(c("C/C", "A/C")), 
 								map_signif_level=TRUE, y = max(CHCHD2[which(CHCHD2$Location != "Site 3_Cryopreserved"),]$Counts) + 5,
 								test = "t.test")+
 					ylim(0,max(CHCHD2[which(CHCHD2$Location != "Site 3_Cryopreserved"),]$Counts) + 25)
@@ -206,11 +236,11 @@ pCHCHD2_counts_eQTL_mean <- ggplot(CHCHD2_means[which(CHCHD2_means$Location != "
 					theme_classic() +
 					facet_grid(Location ~ Time) +
 					ylab("CHCHD2 Counts")+
-					xlab("rs2304376 Genotype") +
+					xlab("rs10043 Genotype") +
 					scale_color_manual(values = line_colors) +
 					new_scale("color") +
 					geom_smooth(method = "lm", inherit.aes = FALSE, aes(x = Genotype_Numeric, y = Mean), color = "black", size = 0.5) +
-					scale_x_continuous(breaks  = c(0,0.5), labels=c("A/A", "A/G"))  +
+					scale_x_continuous(breaks  = c(0,0.5), labels=c("C/C", "A/C"))  +
 					geom_text(data = t_test_df[which(t_test_df$Location != "Site 3_Cryopreserved"),], aes(label=paste0("Beta = ",Beta_lm)), x = -Inf, y = Inf,  hjust = -0.1, vjust = 1.4,
             inherit.aes = FALSE, size = 2)
 save_figs(pCHCHD2_counts_eQTL_mean, paste0(outdir,"CHCHD2/counts_eQTL_mean"), width = 9, height = 6)
@@ -221,13 +251,13 @@ pCHCHD2_counts_eQTL_mean_norm <- ggplot(CHCHD2_means_norm[which(CHCHD2_means_nor
 					theme_classic() +
 					facet_grid(Location ~ Time, scales = "free_y") +
 					ylab("CHCHD2 Normalized Counts")+
-					xlab("rs2304376 Genotype") +
+					xlab("rs10043 Genotype") +
 					scale_color_manual(values = line_colors) +
 					new_scale("color") +
 					geom_smooth(method = "lm", inherit.aes = FALSE, aes(x = Genotype_Numeric, y = Mean), color = "black", size = 0.5) +
-					scale_x_continuous(breaks  = c(0,0.5), labels=c("A/A", "A/G"))  +
+					scale_x_continuous(breaks  = c(1,2), labels=c("C/C", "A/C"))  +
 					geom_text(data = t_test_norm_df[which(t_test_norm_df$Location != "Site 3_Cryopreserved"),], aes(label=paste0("beta = ", Beta_lm)), x = -Inf, y = Inf,  hjust = -0.1, vjust = 1.4,inherit.aes = FALSE, size = 2.5)
-save_figs(pCHCHD2_counts_eQTL_mean_norm, paste0(outdir,"CHCHD2/counts_eQTL_mean_norm"), width = 9, height = 6)
+save_figs(pCHCHD2_counts_eQTL_mean_norm, paste0(outdir,"CHCHD2/counts_eQTL_mean_norm"), width = 10, height = 6)
 
 
 
@@ -240,8 +270,8 @@ pCHCHD2_counts_cryo_eQTL <- ggplot(CHCHD2_cryo, aes(x = Genotype, y = Counts)) +
 					theme_classic() +
 					facet_grid(Location ~ Time) +
 					ylab("CHCHD2 Counts") +
-					xlab("rs2304376 Genotype") +
-					geom_signif(comparisons = list(c("A/A", "A/G")), 
+					xlab("rs10043 Genotype") +
+					geom_signif(comparisons = list(c("C/C", "A/C")), 
 								map_signif_level=TRUE, y = max(CHCHD2[which(CHCHD2$Location != "Site 3_Cryopreserved"),]$Counts) + 5,
 								test = "t.test")+
 					ylim(0,max(CHCHD2[which(CHCHD2$Location != "Site 3_Cryopreserved"),]$Counts) + 25)
@@ -262,11 +292,11 @@ pCHCHD2_counts_eQTL_mean_norm_cryo <- ggplot(CHCHD2_means_norm_cryo, aes(x = Gen
 					theme_classic() +
 					facet_grid(factor(Location, levels = c("Fresh", "Cryopreserved")) ~ Time) +
 					ylab("CHCHD2 Normalized Counts")+
-					xlab("rs2304376 Genotype") +
+					xlab("rs10043 Genotype") +
 					scale_color_manual(values = line_colors) +
 					new_scale("color") +
 					geom_smooth(method = "lm", inherit.aes = FALSE, aes(x = Genotype_Numeric, y = Mean), color = "black", size = 0.5) +
-					scale_x_continuous(breaks  = c(0,0.5), labels=c("A/A", "A/G"))  +
+					scale_x_continuous(breaks  = c(0,0.5), labels=c("C/C", "A/C"))  +
 					geom_text(data = t_test_norm_df_cryo, aes(label=paste0("beta = ", Beta_lm)), x = -Inf, y = Inf,  hjust = -0.1, vjust = 1.4,inherit.aes = FALSE, size = 2.5)
 save_figs(pCHCHD2_counts_eQTL_mean_norm_cryo, paste0(outdir,"CHCHD2/counts_eQTL_mean_norm_cryo"), width = 10, height = 7)
 
@@ -463,7 +493,7 @@ dir.create(paste0(outdir,"pluri_genes/"))
 
 
 ##### Read in significance #####
-pluri_deg <- readRDS("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/Expression_Boxplots/pluri_degs/LR_DEGs_4pluri_genes.rds")
+pluri_deg <- readRDS("/directflow/SCCGGroupShare/projects/DrewNeavin/iPSC_Village/output/Expression_Boxplots/pluri_degs/LR_DEGs_subset_4pluri_genes.rds")
 
 
 pluri_deg <- lapply(names(pluri_deg), function(x){
@@ -476,13 +506,20 @@ pluri_deg <- lapply(names(pluri_deg), function(x){
 
 pluri_deg_dt <- do.call(rbind,pluri_deg)
 colnames(pluri_deg_dt) <- gsub("GeneID", "Gene", colnames(pluri_deg_dt))
+
+fwrite(pluri_deg_dt, paste0(outdir, "pluri_degs.tsv"), sep = "\t")
+
 pluri_deg_dt$Symbol <- "*"
 pluri_deg_dt$counts_position <- ifelse(pluri_deg_dt$Gene == "MYC", 26,
 									ifelse(pluri_deg_dt$Gene == "NANOG", 22, 
 										ifelse(pluri_deg_dt$Gene == "POU5F1", 115, 60)))
 
-df$Cryopreservation <- ifelse(df$Location != "3_Cryopreserved", "Fresh", "Cryopreserved")
+									
+
+df$Cryopreservation <- ifelse(df$Location != "Site 3_Cryopreserved", "Fresh", "Cryopreserved")
 df$Location <- gsub("_Cryopreserved", "", df$Location)
+
+fwrite(df, paste0(outdir, "pluri_genes_exp.tsv"), sep = "\t")
 
 
 p_counts <- ggplot(df[Cryopreservation != "Cryopreserved"], aes(x = Final_Assignment, y = Counts, color = Time)) +
@@ -522,33 +559,127 @@ p_scaled <- ggplot(df[Location != "Cryopreserved"], aes(x = Final_Assignment, y 
 						aes(x = Final_Assignment, y = counts_position,label = Symbol), 
 						color = "black",
 						size = 3) 
-save_figs(p_scaled, paste0(outdir,"pluri_genes/pluri_normalized"), width = 15, height = 10)
+
+save_figs(p_scaled, paste0(outdir,"pluri_genes/pluri_normalized"), width = 11, height = 10)
+
+
+pluri_deg_dt$scaled_position <- ifelse(pluri_deg_dt$Gene == "MYC", 8.5,
+									ifelse(pluri_deg_dt$Gene == "NANOG", 8, 
+										ifelse(pluri_deg_dt$Gene == "POU5F1", 7, 7)))
+
+scales_y <- list(
+  `MYC` = scale_y_continuous(limits = c(-3, 9)),
+  `NANOG` = scale_y_continuous(limits = c(-3, 9)),
+  `POU5F1` = scale_y_continuous(limits = c(-5, 8)),
+  `SOX2` = scale_y_continuous(limits = c(-4, 8))
+)
+
+p_scaled_vio <- ggplot() +
+					geom_density(data=subset(df[Location != "Cryopreserved"], Time=="Uni-Culture"), aes(y = Normalized, fill=Time, x= -..density.., group = Final_Assignment), alpha = 0.7, lwd = 0) +
+					geom_density(data=subset(df[Location != "Cryopreserved"], Time=="Village"), aes(y = Normalized, fill=Time, x= ..density.., group = Final_Assignment), alpha = 0.7, lwd = 0) +
+					# geom_split_violin(aes(fill = Time)) 
+					theme_classic() +
+					facet_grid_sc(Gene ~ paste0(Location, Final_Assignment), scales = list(y = scales_y, x = "free")) +
+					scale_color_manual(values = village_colors) +
+					scale_fill_manual(values = alpha(village_colors, 0.4)) +
+					theme(axis.title.x = element_blank()) +
+					ylab("Normalized Expression") +
+					theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+					geom_text(
+						data = pluri_deg_dt[Cryopreservation != "Cryopreserved"],
+						aes(x = 0, y = scaled_position,label = Symbol), 
+						color = "black",
+						size = 3)  +
+					theme(axis.title.x=element_blank(),
+						axis.text.x=element_blank(),
+						axis.ticks.x=element_blank(),
+						panel.spacing.x = unit(0, "lines"))
+					# stat_summary(fun.data = mean_se, mapping = aes(color = Time, group = Time), show.legend = FALSE, size = 0.01, position = position_dodge(width = .7))
+
+save_figs(p_scaled_vio, paste0(outdir,"pluri_genes/pluri_normalized_vio"), width = 14.25, height = 8.75)
 
 
 df_cryo <- df[grepl("Site 3", df$Location),]
-df_cryo$Location <- factor(gsub("Site 3_Cryopreserved", "Cryopreserved", df_cryo$Location) %>% gsub("Site 3", "Fresh", .), levels = c("Fresh", "Cryopreserved"))
 
+pluri_deg_dt_cryo <- pluri_deg_dt[Location == "Site 3"]
+pluri_deg_dt_cryo$counts_position <- ifelse(pluri_deg_dt_cryo$Gene == "MYC", 20,
+									ifelse(pluri_deg_dt_cryo$Gene == "NANOG", 19, 
+										ifelse(pluri_deg_dt_cryo$Gene == "POU5F1", 100, 50)))
 
 p_counts_cryo <- ggplot(df_cryo, aes(x = Final_Assignment, y = Counts, color = Time)) +
 					geom_boxplot(outlier.size = 0.5) +
 					theme_classic() +
-					facet_grid(Gene ~ Location, scales = "free_y") +
+					facet_grid(Gene ~ Cryopreservation, scales = "free_y") +
 					scale_color_manual(values = village_colors) +
 					theme(legend.position = "none",
 						axis.title.x = element_blank()) +
+					geom_text(
+						data = pluri_deg_dt_cryo[Location == "Site 3"],
+						aes(x = Final_Assignment, y = counts_position,label = Symbol), 
+						color = "black",
+						size = 4) +
 					theme(axis.text.x = element_text(angle = 45, hjust = 1))
 save_figs(p_counts_cryo, paste0(outdir,"pluri_genes/pluri_counts_cryo"), width = 10, height = 8)
 
+
+pluri_deg_dt_cryo$counts_position <- ifelse(pluri_deg_dt_cryo$Gene == "MYC", 9,
+									ifelse(pluri_deg_dt_cryo$Gene == "NANOG", 9, 
+										ifelse(pluri_deg_dt_cryo$Gene == "POU5F1", 9, 8)))
+
+scales_y_cryo <- list(
+  `MYC` = scale_y_continuous(limits = c(-3, 10)),
+  `NANOG` = scale_y_continuous(limits = c(-3, 10)),
+  `POU5F1` = scale_y_continuous(limits = c(-6, 10)),
+  `SOX2` = scale_y_continuous(limits = c(-4, 9))
+)
+
 p_scaled_cryo <- ggplot(df_cryo, aes(x = Final_Assignment, y = Normalized, color = Time)) +
-					geom_boxplot(outlier.size = 0.5) +
+					introdataviz::geom_split_violin(aes(fill = Time), alpha = .4, trim = FALSE, lwd = 0.3, draw_quantiles = TRUE, scale = "width") +
+					# geom_boxplot(outlier.size = 0.5) +
 					theme_classic() +
-					facet_grid(Gene ~ Location, scales = "free_y") +
+					facet_grid_sc(Gene ~ Cryopreservation, scales = list(y = scales_y_cryo)) +
 					scale_color_manual(values = village_colors) +
 					theme(legend.position = "none",
 						axis.title.x = element_blank()) +
+					geom_text(
+						data = pluri_deg_dt_cryo[Location == "Site 3"],
+						aes(x = Final_Assignment, y = counts_position,label = Symbol), 
+						color = "black",
+						size = 4) +
 					theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
 					ylab("Normalized Expression")
 save_figs(p_scaled_cryo, paste0(outdir,"pluri_genes/pluri_normalized_cryo"), width = 10, height = 9)
+
+
+df_cryo$Final_Assignment <- factor(df_cryo$Final_Assignment, levels = c("FSA0006", "MBE1006", "TOB0421"))
+
+
+
+
+
+
+p_scaled_cryo_vio <- ggplot() +
+					geom_density(data=subset(df_cryo, Time=="Uni-Culture"), aes(y = Normalized, fill=Time, x= -..density.., group = Final_Assignment), alpha = 0.7, lwd = 0) +
+					geom_density(data=subset(df_cryo, Time=="Village"), aes(y = Normalized, fill=Time, x= ..density.., group = Final_Assignment), alpha = 0.7, lwd = 0) +
+					# geom_split_violin(aes(fill = Time)) 
+					theme_classic() +
+					facet_grid_sc(Gene ~ factor(paste0(Cryopreservation, Final_Assignment), levels = c(paste0("Fresh", levels(df_cryo$Final_Assignment)), paste0("Cryopreserved", levels(df_cryo$Final_Assignment)))), scales = list(y = scales_y_cryo, x = "free")) +
+					scale_color_manual(values = village_colors) +
+					scale_fill_manual(values = alpha(village_colors, 0.4)) +
+					theme(axis.title.x = element_blank()) +
+					ylab("Normalized Expression") +
+					theme(axis.text.x = element_text(angle = 45, hjust = 1))  +
+					geom_text(
+						data = pluri_deg_dt_cryo,
+						aes(x = 0, y = counts_position,label = Symbol), 
+						color = "black",
+						size = 3) +
+					theme(axis.title.x=element_blank(),
+						axis.text.x=element_blank(),
+						axis.ticks.x=element_blank(),
+						panel.spacing.x = unit(0, "lines"))
+
+save_figs(p_scaled_cryo_vio, paste0(outdir,"pluri_genes/pluri_normalized_cryo_vio"), width = 13.5, height = 8.5)
 
 
 

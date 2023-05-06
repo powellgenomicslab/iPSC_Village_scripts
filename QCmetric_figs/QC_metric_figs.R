@@ -92,16 +92,6 @@ cell_cycle_fresh <- ggbarplot(prop_df_long[which(prop_df_long$Cryopreservation =
 save_figs(cell_cycle_fresh,  paste0(outdir,"cell_cycle_fresh_facet"), width = 13, height = 8.5)
 
 
-## Fresh samples - facet by site and plot each replicate at baseline and village on x axis for each
-cell_cycle_fresh_line <- ggbarplot(prop_df_long[which(prop_df_long$Cryopreservation == "Fresh"),], "Village_Line", "Proportion", add = c("mean_se"), fill = "CellCycle", facet.by = c("Location"), scales = "free_x", legend = "right") +
-    rotate_x_text(45) +
-    scale_fill_manual(values = c("#4393C3", "#92C5DE", "#D1E5F0")) +
-	theme(axis.title.x=element_blank())
-
-save_figs(cell_cycle_fresh_line,  paste0(outdir,"cell_cycle_fresh_facet_by_line"), width = 13, height = 8.5)
-
-
-
 
 ## Cryopreserved samples - facet by site and plot each replicate at baseline and village on x axis for each
 cell_cycle_cryo <- ggbarplot(prop_df_long[which(prop_df_long$Location == "Site 3"),], "Village_Rep", "Proportion", add = c("mean_se"), fill = "CellCycle", facet.by = c("Cryopreservation"), scales = "free_x", legend = "right") +
@@ -130,33 +120,50 @@ save_figs(cell_cycle_cryo,  paste0(outdir,"cell_cycle_cryo_facet_by_line"), widt
 ### All together ###
 indiv_prop_df <- prop.table(table(paste0(seurat@meta.data$Location_Time,".", seurat@meta.data$Site_rep) ,seurat@meta.data$Final_Assignment), margin = 1)
 
-indiv_prop_df_long <- as.data.frame(indiv_prop_df)
+indiv_prop_df_long <- as.data.table(indiv_prop_df)
 colnames(indiv_prop_df_long) <- c("Category", "CellLine", "Proportion")
 indiv_prop_df_long <- separate(indiv_prop_df_long, sep = "\\.", col = "Category", into = c("Location_Time", "Site_rep"))
-indiv_prop_df_long$Location_Time <- gsub("Brisbane_", "Brisbane.", indiv_prop_df_long$Location_Time) %>%
-                                gsub("Sydney_", "Sydney.", .) %>%
-                                gsub("Melbourne_", "Melbourne.", .)
+indiv_prop_df_long$Location_Time <- gsub("Brisbane_", "Site 1.", indiv_prop_df_long$Location_Time) %>%
+                                gsub("Sydney_", "Site 3.", .) %>%
+                                gsub("Melbourne_", "Site 2.", .)
 
-indiv_prop_df_long$Location_Time <- factor(indiv_prop_df_long$Location_Time, levels = c("Brisbane.Baseline","Brisbane.Village_Day_4", "Melbourne.Baseline", "Melbourne.Village_Day_4", "Sydney.Baseline", "Sydney.Village_Day_4", "Sydney.Thawed_Village_Day_0", "Sydney.Thawed_Village_Day_7"))
-indiv_prop_df_long$Location_Rep_Time <- factor(paste0(indiv_prop_df_long$Location, "-", gsub("\\D+", "", indiv_prop_df_long$Site_rep), ".", indiv_prop_df_long$Time),levels = c("Site 1-1.Baseline", "Site 1-2.Baseline", "Site 1-3.Baseline",
-																																												"Site 1-1.Village_Day_4", "Site 1-2.Village_Day_4", "Site 1-3.Village_Day_4", 
-																																												"Site 2-1.Baseline", "Site 2-2.Baseline", "Site 2-3.Baseline",
-																																												"Site 2-1.Village_Day_4", "Site 2-2.Village_Day_4", "Site 2-3.Village_Day_4", 
-																																												"Site 3-1.Baseline", "Site 3-2.Baseline", "Site 3-3.Baseline",
-																																												"Site 3-1.Village_Day_4", "Site 3-2.Village_Day_4", "Site 3-3.Village_Day_4",
-																																												"Site 3-1.Thawed_Village_Day_0", "Site 3-2.Thawed_Village_Day_0", "Site 3-3.Thawed_Village_Day_0",
-																																												"Site 3-1.Thawed_Village_Day_7", "Site 3-2.Thawed_Village_Day_7", "Site 3-3.Thawed_Village_Day_7"))
+indiv_prop_df_long$Location_Time <- factor(indiv_prop_df_long$Location_Time, levels = c("Site 1.Baseline","Site 1.Village_Day_4", "Site 2.Baseline", "Site 2.Village_Day_4", "Site 3.Baseline", "Site 3.Village_Day_4", "Site 3.Thawed_Village_Day_0", "Site 3.Thawed_Village_Day_7"))
+
+indiv_prop_df_long[, c("Location", "Time") := tstrsplit(Location_Time, ".", fixed=TRUE)]
+
+indiv_prop_df_long$Cryopreserved <- ifelse(grepl("Thawed", indiv_prop_df_long$Time), "Cryopreserved", "Fresh")
+indiv_prop_df_long$Cryopreserved <- factor(indiv_prop_df_long$Cryopreserved, levels = c("Fresh", "Cryopreserved"))
+
+indiv_prop_df_long$Time <- gsub("Baseline", "Uni-culture", indiv_prop_df_long$Time) %>%
+                                gsub("Thawed_Village_Day_0", "Uni-culture", .) %>%
+                                    gsub("Village_Day_4", "Village", .) %>%
+                                        gsub("Thawed_Village_Day_7", "Village", .)
+
+
+indiv_prop_df_long$Location_Rep_Time <- factor(paste0(indiv_prop_df_long$Location, "_", gsub("\\D+", "", indiv_prop_df_long$Site_rep), ".", indiv_prop_df_long$Time),levels = c("Site 1_1.Uni-culture", "Site 1_2.Uni-culture", "Site 1_3.Uni-culture",
+																																												"Site 1_1.Village", "Site 1_2.Village", "Site 1_3.Village", 
+																																												"Site 2_1.Uni-culture", "Site 2_2.Uni-culture", "Site 2_3.Uni-culture",
+																																												"Site 2_1.Village", "Site 2_2.Village", "Site 2_3.Village", 
+																																												"Site 3_1.Uni-culture", "Site 3_2.Uni-culture", "Site 3_3.Uni-culture",
+																																												"Site 3_1.Village", "Site 3_2.Village", "Site 3_3.Village"))
+
+
+
+indiv_prop_df_long$Location_Rep_Cryo <- factor(paste0(indiv_prop_df_long$Location, "_", gsub("\\D+", "", indiv_prop_df_long$Site_rep), ".", indiv_prop_df_long$Cryopreserved),levels = c("Site 1_1.Fresh", "Site 1_2.Fresh", "Site 1_3.Fresh",
+																																												"Site 2_1.Fresh", "Site 2_2.Fresh", "Site 2_3.Fresh",
+																																												"Site 3_1.Fresh", "Site 3_2.Fresh", "Site 3_3.Fresh",
+																																												"Site 3_1.Cryopreserved", "Site 3_2.Cryopreserved", "Site 3_3.Cryopreserved"))
 
 
 
 
 
 ### Make column for location only and update to sites 1, 2 and 3
-indiv_prop_df_long <- separate(indiv_prop_df_long, col = "Location_Time", sep = "\\.", into = c("Location", "Time"), remove = FALSE)
+# indiv_prop_df_long <- separate(indiv_prop_df_long, col = "Location_Time", sep = "\\.", into = c("Location", "Time"), remove = FALSE)
 
-for (location in names(site_updates)){
-	indiv_prop_df_long$Location <- gsub(location, site_updates[location], indiv_prop_df_long$Location)
-}
+# for (location in names(site_updates)){
+# 	indiv_prop_df_long$Location <- gsub(location, site_updates[location], indiv_prop_df_long$Location)
+# }
 
 
 cell_line_loc_time <- ggbarplot(indiv_prop_df_long, "Location_Time", "Proportion", add = c("mean_se"), fill = "CellLine") +
@@ -179,12 +186,12 @@ indiv_prop_df_long$Time <- gsub("Village_Day_4", "Village", indiv_prop_df_long$T
 indiv_prop_df_long$Time_rep <- paste0(indiv_prop_df_long$Time, "-", gsub("\\D+", "", indiv_prop_df_long$Site_rep))
 
 
-cell_line_loc_time_first2 <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Time == "Baseline" | indiv_prop_df_long$Time == "Village"),], "Time", "Proportion", add = c("mean_se"), fill = "CellLine", facet.by = "Location", size = 0.25) +
+cell_line_loc_time_first2 <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Cryopreserved != "Cryopreserved"),], "Time", "Proportion", add = c("mean_se"), fill = "CellLine", facet.by = "Location", size = 0.25) +
     scale_fill_manual(values = cell_line_colors) +
-	rotate_x_text(45) +
+	rotate_x_text(90) +
 	theme(axis.title.x=element_blank())
 
-save_figs(cell_line_loc_time_first2,  paste0(outdir,"cell_line_stacked_bar_location_time_baseline_village_4days"), width = 6, height = 8)
+save_figs(cell_line_loc_time_first2,  paste0(outdir,"cell_line_stacked_bar_location_time_baseline_village_4days"), width = 6, height = 12)
 
 
 cell_line_loc_time_rep <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Time == "Baseline" | indiv_prop_df_long$Time == "Village"),], "Time_rep", "Proportion", fill = "CellLine", facet.by = "Location", size = 0.25) +
@@ -193,6 +200,26 @@ cell_line_loc_time_rep <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$
 	theme(axis.title.x=element_blank())
 
 save_figs(cell_line_loc_time_rep,  paste0(outdir,"cell_line_stacked_bar_location_time_rep_baseline_village_4days"), width = 10, height = 8)
+
+
+
+cell_line_loc_time_rep <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Time == "Baseline" | indiv_prop_df_long$Time == "Village"),], "Time_rep", "Proportion", fill = "CellLine", facet.by = "Location", size = 0.25) +
+    scale_fill_manual(values = cell_line_colors) +
+	rotate_x_text(45) +
+	theme(axis.title.x=element_blank())
+
+save_figs(cell_line_loc_time_rep,  paste0(outdir,"cell_line_stacked_bar_location_time_rep_baseline_village_4days"), width = 10, height = 8)
+
+
+
+
+cell_line_loc_time_rep_cryo <- ggbarplot(indiv_prop_df_long[which(indiv_prop_df_long$Location == "Site 3" ),], "Location_Rep_Time", "Proportion", fill = "CellLine", facet.by = "Cryopreserved", size = 0.25) +
+    scale_fill_manual(values = cell_line_colors) +
+	rotate_x_text(45) +
+	theme(axis.title.x=element_blank())
+
+save_figs(cell_line_loc_time_rep_cryo,  paste0(outdir,"cell_line_stacked_bar_location_time_rep_baseline_village_cryo"), width = 8, height = 15)
+
 
 
 
@@ -227,16 +254,18 @@ exp(confint(Mod)) #This gives you the CIs for the different terms in the model
 
 ## Proportion of cell lines for Sydney
 indiv_prop_df_long_syd <- indiv_prop_df_long[which(indiv_prop_df_long$Location == "Site 3"),]
-indiv_prop_df_long_syd$Village <- ifelse((indiv_prop_df_long_syd$Time == "Thawed_Village_Day_0" | indiv_prop_df_long_syd$Time == "Baseline"), "Baseline", "Village")
-indiv_prop_df_long_syd$Cryopreservation <- ifelse((indiv_prop_df_long_syd$Time == "Thawed_Village_Day_0" | indiv_prop_df_long_syd$Time == "Thawed_Village_Day_7"), "Cryo-\npreserved", "Fresh")
-indiv_prop_df_long_syd$Cryopreservation <- factor(indiv_prop_df_long_syd$Cryopreservation, levels = c("Fresh", "Cryo-\npreserved"))
+# indiv_prop_df_long_syd$Village <- ifelse((indiv_prop_df_long_syd$Time == "Thawed_Village_Day_0" | indiv_prop_df_long_syd$Time == "Baseline"), "Baseline", "Village")
+indiv_prop_df_long_syd$Cryopreserved <- gsub("Cryopreserved", "Cryo-\npreserved", indiv_prop_df_long_syd$Cryopreserved)
+indiv_prop_df_long_syd$Cryopreserved <- factor(indiv_prop_df_long_syd$Cryopreserved, levels = c("Fresh", "Cryo-\npreserved"))
 
-cell_line_loc_time_first3 <- ggbarplot(indiv_prop_df_long_syd, "Village", "Proportion", add = c("mean_se"), fill = "CellLine", facet.by = "Cryopreservation", scales = "free_x") +
-    scale_fill_manual(values = cell_line_colors) +
-	rotate_x_text(45) +
+
+
+cell_line_loc_time_first3 <- ggbarplot(indiv_prop_df_long_syd, "Time", "Proportion", add = c("mean_se"), fill = "CellLine", facet.by = "Cryopreserved", scales = "free_x") +
+    scale_fill_manual(values = cell_line_colors, alpha = 0.7) +
+	rotate_x_text(90) +
 	theme(axis.title.x = element_blank())
 
-save_figs(cell_line_loc_time_first3,  paste0(outdir,"cell_line_stacked_bar_location_time_Sydney"), width = 6, height = 8)
+save_figs(cell_line_loc_time_first3,  paste0(outdir,"cell_line_stacked_bar_location_time_Sydney"), width = 6, height = 12)
 
 
 
@@ -504,3 +533,11 @@ n_umi_cryo <- ggplot(seurat@meta.data[which(seurat@meta.data$Location == "Site 2
 			facet_wrap(vars(Cryopreservation), nrow = 1)
 
 save_figs(n_umi_cryo,  paste0(outdir,"n_umis_cryo_facet"), width = 10.5, height = 6)
+
+
+
+
+QC_dt <- data.table(Barcode = colnames(seurat), seurat@meta.data[,c("Location", "Final_Assignment", "Cryopreservation", "phases", "percent.mt", "nCount_RNA", "nFeature_RNA")])
+
+
+fwrite(QC_dt, paste0(outdir, "QC_metrics.tsv"), sep = "\t")
